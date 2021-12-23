@@ -1,5 +1,9 @@
+/* First c++ programming
+    One way of adding comment
+    with <comments>
+*/ 
 #include <iostream>
-using namespace std;
+using namespace std;  // scope binding
 
 int main()
 {
