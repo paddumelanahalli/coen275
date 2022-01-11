@@ -43,6 +43,7 @@ class result : public test, public sports // test is derived from student
             show_marks();
             show_score();
            
+            cout << "Total Score: " << total << endl;
         }
 };
 
@@ -64,4 +65,5 @@ Marks Obtained:
 Part 1: 27.5
 Part 2: 33
 sports weight: 6
+Total Score: 66.5
 */
