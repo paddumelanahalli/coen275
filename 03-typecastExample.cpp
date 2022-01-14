@@ -15,3 +15,9 @@ int main()
     cout << "int(floatvar) = " << int(floatvar) << endl;
 
 }
+/* output
+intvar = 25     
+floatvar = 35.87
+float(intvar) = 25.00
+int(floatvar) = 35
+*/
