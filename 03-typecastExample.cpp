@@ -1,6 +1,6 @@
 // Explicit type casting example
 #include <iostream>
-#include <conio.h> // for getch
+#include <iomanip>
 
 using namespace std;
 
@@ -11,8 +11,7 @@ int main()
 
     cout << "intvar = " << intvar << endl;
     cout << "floatvar = " << floatvar << endl;
-    cout << " float(intvar) %.2f= " << float(intvar) << endl;
+    cout << "float(intvar) = " << fixed << setprecision(2) << float(intvar) << endl;
     cout << "int(floatvar) = " << int(floatvar) << endl;
 
-    getch();
 }
