@@ -1,7 +1,7 @@
 // Recusion example
 // examples of cout and cin
 #include <iostream>
-#include <conio.h>
+#include <conio.h> // Mac users can use <ncurses.h>
 using namespace std;
 
 long fact(int n) 
