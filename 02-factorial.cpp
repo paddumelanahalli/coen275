@@ -20,6 +20,6 @@ int main()
 
     cout << "Factorial of number " << num << " is " << fact(num) << endl; // cascading cout, many << operators
 
-    //getch();
+    //getch();  // We can also use cin.get(), then we don't need to include <conio.h>
     return 0;
 }
