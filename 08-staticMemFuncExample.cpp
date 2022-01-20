@@ -4,6 +4,11 @@ using namespace std;
 class test{
     int code;
     static int count; //static member
+    /* Static variables are initialized only once , at the start of the execution. 
+    These variables will be initialized first, before the initialization of any instance variables. 
+    A single copy to be shared by all instances of the class. 
+    A static variable can be accessed directly by the class name and doesn't need any object.
+    */
 
 public:
     void setCode(void) {code = ++count;}
