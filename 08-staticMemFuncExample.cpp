@@ -22,7 +22,7 @@ public:
     }
 };
 
-int test:: count;
+int test:: count; // We can initaize it here as well eg: int test:: count = 0;
 
 int main()
 {
