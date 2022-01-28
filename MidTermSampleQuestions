@@ -1,0 +1,48 @@
+Sample Questions on software engineering and development methodology:
+
+
+Q1. Which of the following is not an agile value? 
+a. Individuals and interactions over processes and tools 
+b. Working software over comprehensive documentation 
+c. Customer collaboration over contract negotiation 
+d. Responding to change over following a plan 
+e. None of the above (i.e., all are agile values)
+
+
+Q2. What is the difference between object-oriented programming and procedural programming?
+a. Procedural programming can use looping and branching, but object-oriented programming cannot.
+b. Procedural programming uses subroutines, but object-oriented programming does not allow them.
+c. Procedural programming specifies a sequence of tasks, but object-oriented programming describes the properties of tools or items.
+d. Procedural programming specifies a sequence of calculations, but object-oriented programming involves more logic.
+
+
+Q3. What is the purpose of encapsulation?
+a. to protect an object from unwanted changes
+b. to eliminate redundant properties
+c. to separate attributes from behaviors
+d. to organize attributes and behaviors in a hierarchical fashion
+
+Q4. What is the output of this C++ program
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int var1=5, var2=10;
+    for (int i=1; i <=2; i++)
+    {
+        cout << var1++ << '\t' << --var2 <<endl;
+        cout << var2-- << '\t' << ++var1 <<endl;
+    }
+    return 0;
+}
+
+a. 5  9
+   9  7
+   
+b. 5  9
+   9  7
+   7  7
+   7  7
+c. No output but there is a error
+
