@@ -31,6 +31,203 @@
 
  #endif
 
+
+ // Order.cpp
+ #include "Order.h"
+ 
+
+ Order::Order(int orderId, int customerId) : orderId(orderId), customerId(customerId) {}
+ 
+
+ void Order::addOrderItem(const OrderItem& item) {
+  orderItems.push_back(item);
+ }
+ 
+
+ double Order::calculateTotal() const {
+  double total = 0.0;
+  for (const auto& item : orderItems) {
+  total += item.calculateSubtotal();
+  }
+  return total;
+ }
+ 
+
+ int Order::getOrderId() const{
+  return orderId;
+ }
+ 
+
+ int Order::getCustomerId() const {
+  return customerId;
+ }
+ 
+
+ const std::vector<OrderItem>& Order::getOrderItems() const{
+  return orderItems;
+ }
+ 
+
+ void Order::setPayment(const Payment& payment){
+  this->payment = payment;
+ }
+ 
+
+ const Payment& Order::getPayment() const{
+  return payment;
+ }
+
+ // OrderItem.h
+ #ifndef ORDER_ITEM_H
+ #define ORDER_ITEM_H
+ #include <string>
+ 
+
+ class OrderItem {
+ public:
+  OrderItem(int itemId, const std::string& itemName, double price, int quantity);
+  double calculateSubtotal() const;
+  int getItemId() const;
+  std::string getItemName() const;
+  double getPrice() const;
+  int getQuantity() const;
+ private:
+  int itemId;
+  std::string itemName;
+  double price;
+  int quantity;
+ };
+ #endif
+
+ // OrderItem.cpp
+ #include "OrderItem.h"
+ 
+
+ OrderItem::OrderItem(int itemId, const std::string& itemName, double price, int quantity)
+  : itemId(itemId), itemName(itemName), price(price), quantity(quantity) {}
+ 
+
+ double OrderItem::calculateSubtotal() const {
+  return price * quantity;
+ }
+ 
+
+ int OrderItem::getItemId() const{
+  return itemId;
+ }
+ 
+
+ stdbel::string OrderItem::getItemName() const{
+  return itemName;
+ }
+ 
+
+ double OrderItem::getPrice() const{
+  return price;
+ }
+ 
+
+ int OrderItem::getQuantity() const{
+  return quantity;
+ }
+
+
+ // Customer.h
+ #ifndef CUSTOMER_H
+ #define CUSTOMER_H
+ #include <string>
+ 
+
+ class Customer {
+ public:
+  Customer(int customerId, const std::string& name, const std::string& email);
+  int getCustomerId() const;
+  std::string getName() const;
+  std::string getEmail() const;
+ 
+
+ private:
+  int customerId;
+  std::string name;
+  std::string email;
+ };
+ #endif
+
+ // Customer.cpp
+ #include "Customer.h"
+ 
+
+ Customer::Customer(int customerId, const std::string& name, const std::string& email)
+  : customerId(customerId), name(name), email(email) {}
+ 
+
+ int Customer::getCustomerId() const{
+  return customerId;
+ }
+ 
+
+ std::string Customer::getName() const{
+  return name;
+ }
+ 
+
+ std::string Customer::getEmail() const{
+  return email;
+ }
+
+
+ // Payment.h
+ #ifndef PAYMENT_H
+ #define PAYMENT_H
+ #include <string>
+ 
+
+ class Payment {
+ public:
+  Payment(int paymentId, double amount, const std::string& paymentMethod);
+  int getPaymentId() const;
+  double getAmount() const;
+  std::string getPaymentMethod() const;
+ 
+
+ private:
+  int paymentId;
+  double amount;
+  std::string paymentMethod;
+ };
+ #endif
+
+ // Payment.cpp
+ #include "Payment.h"
+ 
+
+ Payment::Payment(int paymentId, double amount, const std::string& paymentMethod)
+  : paymentId(paymentId), amount(amount), paymentMethod(paymentMethod) {}
+ 
+
+ int Payment::getPaymentId() const{
+  return paymentId;
+ }
+ 
+
+ double Payment::getAmount() const{
+  return amount;
+ }
+ 
+
+ std::string Payment::getPaymentMethod() const{
+  return paymentMethod;
+ }
+
+
+
+
+
+
+
+
+
+
 -------------Python
 # Package: OrderManagement 
 
