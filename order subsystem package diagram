@@ -1,0 +1,66 @@
+# Package: OrderManagement 
+
+# Class: Order
+class Order:
+    def __init__(self, customer_id, items):
+        self.customer_id = customer_id
+        self.items = items
+        self.status = "Pending"  
+
+    def add_item(self, item):
+        self.items.append(item)
+
+    def update_status(self, new_status):
+        self.status = new_status 
+
+# Class: OrderItem
+class OrderItem:
+    def __init__(self, product_id, quantity):
+        self.product_id = product_id
+        self.quantity = quantity
+
+# Class: OrderRepository
+class OrderRepository:
+    def create_order(self, order):
+        # Database interaction to save order
+        pass
+
+    def get_order(self, order_id):
+        # Database interaction to retrieve order
+        pass
+
+    def update_order_status(self, order_id, new_status):
+        # Database interaction to update order status
+        pass
+
+# Package: PaymentProcessing 
+
+# Class: PaymentProcessor
+class PaymentProcessor:
+    def process_payment(self, order, payment_details):
+        # Logic to process payment with external gateway
+        pass
+
+# Package: InventoryManagement
+
+# Class: InventoryChecker
+class InventoryChecker:
+    def check_availability(self, product_id, quantity):
+        # Logic to check product availability in inventory
+        pass 
+
+# Usage example 
+
+# Create an order 
+customer_id = 1
+items = [OrderItem(123, 2), OrderItem(456, 1)] 
+new_order = Order(customer_id, items)
+
+# Process payment 
+payment_processor = PaymentProcessor()
+payment_details = {"card_number": "123456"}
+payment_processor.process_payment(new_order, payment_details)
+
+# Save order to database
+order_repo = OrderRepository()
+order_repo.create_order(new_order) 
