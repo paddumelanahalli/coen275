@@ -1,3 +1,37 @@
+------- c++
+
+ // Order.h
+ #ifndef ORDER_H
+ #define ORDER_H
+ #include <vector>
+ #include <string>
+ #include "OrderItem.h"
+ #include "Payment.h"
+ 
+
+ class Order {
+ public:
+  Order(int orderId, int customerId);
+  void addOrderItem(const OrderItem& item);
+  double calculateTotal() const;
+  int getOrderId() const;
+  int getCustomerId() const;
+  const std::vector<OrderItem>& getOrderItems() const;
+  void setPayment(const Payment& payment);
+  const Payment& getPayment() const;
+ 
+
+ private:
+  int orderId;
+  int customerId;
+  std::vector<OrderItem> orderItems;
+  Payment payment;
+ };
+ 
+
+ #endif
+
+-------------Python
 # Package: OrderManagement 
 
 # Class: Order
