@@ -1,0 +1,50 @@
+Below is a C++ code example that demonstrates a simplified representation of an activity diagram. This example models a process of handling an order, which includes activities like receiving an order, filling it, handling billing, and shipping.
+
+This code provides a basic illustration of sequential and parallel activities within a process, similar to how activities are represented in an activity diagram. However, it's important to note that this code does not generate an actual diagram. It only simulates the flow of activities.
+
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+// Simulate an activity with a delay
+void activity(const std::string& name, int duration_ms) {
+    std::cout << "Starting activity: " << name << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(duration_ms));
+    std::cout << "Finished activity: " << name << std::endl;
+}
+
+// Activities
+void receiveOrder() {
+    activity("Receive Order", 1000);
+}
+
+void fillOrder() {
+    activity("Fill Order", 2000);
+}
+
+void handleBilling() {
+    activity("Handle Billing", 1500);
+}
+
+void shipOrder() {
+    activity("Ship Order", 1000);
+}
+
+int main() {
+    std::cout << "Order processing started." << std::endl;
+
+    receiveOrder();
+
+    // Simulate parallel activities using threads
+    std::thread fill_thread(fillOrder);
+    std::thread billing_thread(handleBilling);
+
+    fill_thread.join();
+    billing_thread.join();
+    
+    shipOrder();
+
+    std::cout << "Order processing completed." << std::endl;
+    return 0;
+}
+
