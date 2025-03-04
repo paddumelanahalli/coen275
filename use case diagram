@@ -1,0 +1,94 @@
+Use case diagrams are primarily visual tools used in software development to represent the interactions between users (actors) and a system. They focus on "what" the system does from the user's perspective, not "how" it does it. While use case diagrams themselves aren't directly translated into code, they serve as a blueprint for designing the system's functionality.
+Here's a conceptual example demonstrating how a use case diagram for a simple library system could relate to C++ code:
+Use Case Diagram (Conceptual):
+Actor: Member, Librarian
+Use Cases:
+Borrow Book (Member)
+Return Book (Member)
+Add Book (Librarian)
+Remove Book (Librarian)
+
+
+This C++ code provides a basic implementation of the use cases outlined in the diagram. It defines classes for Book, Member, and Librarian, with methods corresponding to the actions described in the use cases. The main function demonstrates how these classes can be used to simulate the library system's functionality
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+class Book {
+public:
+    std::string title;
+    std::string author;
+    bool isBorrowed;
+
+    Book(std::string title, std::string author) : title(title), author(author), isBorrowed(false) {}
+};
+
+class Member {
+public:
+    std::string name;
+    int memberID;
+    std::vector<Book*> borrowedBooks;
+
+    Member(std::string name, int memberID) : name(name), memberID(memberID) {}
+
+    void borrowBook(Book* book) {
+        if (book && !book->isBorrowed) {
+            borrowedBooks.push_back(book);
+            book->isBorrowed = true;
+            std::cout << name << " borrowed " << book->title << std::endl;
+        } else {
+            std::cout << "Book not available or invalid." << std::endl;
+        }
+    }
+
+    void returnBook(Book* book) {
+         for (size_t i = 0; i < borrowedBooks.size(); ++i) {
+            if (borrowedBooks[i] == book) {
+                borrowedBooks.erase(borrowedBooks.begin() + i);
+                book->isBorrowed = false;
+                std::cout << name << " returned " << book->title << std::endl;
+                return;
+            }
+        }
+        std::cout << "Book was not borrowed by this member." << std::endl;
+    }
+};
+
+class Librarian {
+public:
+    std::string name;
+
+    Librarian(std::string name) : name(name) {}
+
+    void addBook(std::vector<Book>& library, std::string title, std::string author) {
+        library.emplace_back(title, author);
+        std::cout << "Added book: " << title << " by " << author << std::endl;
+    }
+
+    void removeBook(std::vector<Book>& library, std::string title) {
+        for (size_t i = 0; i < library.size(); ++i) {
+            if (library[i].title == title) {
+                library.erase(library.begin() + i);
+                std::cout << "Removed book: " << title << std::endl;
+                return;
+            }
+        }
+         std::cout << "Book not found in library." << std::endl;
+    }
+};
+
+int main() {
+    std::vector<Book> library;
+    Member member1("Alice", 123);
+    Librarian librarian1("Bob");
+
+    librarian1.addBook(library, "The Lord of the Rings", "J.R.R. Tolkien");
+    member1.borrowBook(&library[0]);
+    member1.returnBook(&library[0]);
+    librarian1.removeBook(library, "The Lord of the Rings");
+    return 0;
+}
+
+
