@@ -1,0 +1,251 @@
+COEN 275: Object-Oriented Programming in C++
+
+Class Notes: Procedural vs Object-Oriented Programming, Introduction to C++ and Pointers
+
+I. Procedural vs Object-Oriented Programming
+
+1. Procedural Programming (e.g., C)
+
+Program is divided into functions.
+
+Data and functions are separate.
+
+Functions operate on data.
+
+Follows a top-down approach.
+
+Less modular and less reusable.
+
+Example:
+
+int main() {
+    int a = 5, b = 10;
+    int sum = a + b;
+    printf("Sum: %d", sum);
+    return 0;
+}
+
+Practice Exercises with Sample Solutions:
+
+Factorial Program
+
+int factorial(int n) {
+    if (n == 0) return 1;
+    return n * factorial(n - 1);
+}
+
+int main() {
+    int num = 5;
+    printf("Factorial: %d", factorial(num));
+    return 0;
+}
+
+Shopping Cart Total
+
+float totalPrice(float price[], int size) {
+    float total = 0;
+    for (int i = 0; i < size; i++) total += price[i];
+    return total;
+}
+
+Average of Three Numbers
+
+float computeAverage(float a, float b, float c) {
+    return (a + b + c) / 3;
+}
+
+2. Object-Oriented Programming (e.g., C++)
+
+Program is divided into objects.
+
+Data and functions are encapsulated within objects.
+
+Follows a bottom-up approach.
+
+Promotes code reuse via inheritance.
+
+Supports polymorphism and encapsulation.
+
+Example:
+
+class Calculator {
+public:
+    int add(int a, int b) {
+        return a + b;
+    }
+};
+
+int main() {
+    Calculator calc;
+    cout << "Sum: " << calc.add(5, 10);
+    return 0;
+}
+
+Practice Exercises with Sample Solutions:
+
+Book Class
+
+class Book {
+private:
+    string title, author;
+    float price;
+public:
+    void input(string t, string a, float p) {
+        title = t; author = a; price = p;
+    }
+    void display() {
+        cout << title << ", " << author << ", $" << price << endl;
+    }
+};
+
+BankAccount Class
+
+class BankAccount {
+private:
+    double balance;
+public:
+    BankAccount(double b) : balance(b) {}
+    void deposit(double amount) { balance += amount; }
+    void withdraw(double amount) { balance -= amount; }
+    void displayBalance() { cout << "Balance: $" << balance << endl; }
+};
+
+Rectangle Class
+
+class Rectangle {
+private:
+    double length, width;
+public:
+    Rectangle(double l, double w) : length(l), width(w) {}
+    double area() { return length * width; }
+    double perimeter() { return 2 * (length + width); }
+};
+
+II. Core Object-Oriented Concepts in C++
+
+Practice Exercises with Sample Solutions:
+
+Movie Class
+
+class Movie {
+private:
+    string name, genre;
+    string rating;
+public:
+    Movie(string n, string g, string r) : name(n), genre(g), rating(r) {}
+    bool isPG() { return rating == "PG"; }
+};
+
+Complex Number Class
+
+class Complex {
+private:
+    float real, imag;
+public:
+    Complex(float r, float i) : real(r), imag(i) {}
+    Complex add(Complex c) {
+        return Complex(real + c.real, imag + c.imag);
+    }
+};
+
+Date Class
+
+class Date {
+private:
+    int day, month, year;
+public:
+    Date(int d, int m, int y) : day(d), month(m), year(y) {}
+    bool isValid() {
+        return (day >= 1 && day <= 31 && month >= 1 && month <= 12);
+    }
+};
+
+III. Introduction to Pointers in C++
+
+Practice Exercises with Sample Solutions:
+
+Pointer to Integer
+
+int x = 10;
+int* p = &x;
+cout << "Value: " << x << ", Pointer Value: " << *p;
+
+Swap Using Pointers
+
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+Dynamic Book Class
+
+class Book {
+public:
+    string title;
+    Book(string t) : title(t) {}
+    void show() { cout << title << endl; }
+};
+
+Book* b = new Book("C++ Primer");
+b->show();
+delete b;
+
+IV. Hands-On Exercises
+
+Exercise 1: Bank Account (Procedural)
+
+int balance = 1000;
+void deposit(int amount) {
+    balance += amount;
+}
+
+Exercise 2: Student Class (OOP)
+
+class Student {
+private:
+    string name;
+    double gpa;
+
+public:
+    Student(string n, double g) : name(n), gpa(g) {}
+    void display() {
+        cout << "Name: " << name << ", GPA: " << gpa << endl;
+    }
+};
+
+Exercise 3: Pointers with Objects
+
+Student* s = new Student("Bob", 3.9);
+s->display();
+delete s;
+
+V. Group Activity
+
+Objective: Design a Car class.
+
+Private members: brand, model, speed
+
+Public methods: accelerate(), brake(), display()
+
+Implement using regular object and pointer-based object
+
+VI. Summary
+
+Procedural languages are linear and function-driven.
+
+Object-Oriented Programming encourages modular, reusable design.
+
+C++ supports both paradigms but is optimized for OOP.
+
+Pointers allow dynamic memory and flexible object management.
+
+Homework: Extend the Car class with a derived ElectricCar class using inheritance.
+
+Recommended Reading:
+
+Bjarne Stroustrup, "The C++ Programming Language"
+
+Deitel & Deitel, "C++ How to Program"
+
+Lecture Slides: Week 3a - COEN 275
