@@ -1,0 +1,266 @@
+COEN 275: Object-Oriented Programming in C++
+Class Notes: Parameter Passing, Constructors, Destructors & Object Lifecycle
+________________________________________
+I.	Parameter Passing in C++
+
+ 
+1. Pass by Value
+void increaseByValue(int x) {
+    x += 10;
+    cout << "Inside increaseByValue: " << x << endl;
+}
+2. Pass by Reference (&)
+void increaseByRef(int& x) {
+    x += 10;
+    cout << "Inside increaseByRef: " << x << endl;
+}
+3. Pass by Const Reference (const &)
+void printValue(const int& x) {
+    cout << "Inside printValue: " << x << endl;
+}
+4. Pass by Pointer
+void increaseByPointer(int* x) {
+    (*x) += 10;
+    cout << "Inside increaseByPointer: " << *x << endl;
+}
+
+Comparison Table
+Method|	Mechanism	|Advantage	|Limitation
+Pass by Value	|Copy	|Safe, original data is not modified	|Inefficient for large data, no changes persist
+Pass by Reference|	Direct access	|Efficient, changes persist	|Risk of unintended modification
+Pass by Pointer	|Address-based access	|Useful in dynamic memory, nullable	|Requires explicit dereferencing and checks
+Const Reference	|Read-only access	|Avoids copy cost, protects from changes	|Cannot modify the original value
+
+Real World Example: ATM Machine
+•	Pass by value: Balance query
+•	Pass by reference: Update account info
+•	Pass by pointer: Manage memory for session tokens
+Complete Program: Pass by Methods
+#include <iostream>
+using namespace std;
+
+void increaseByValue(int x) {
+    x += 10;
+    cout << "Inside increaseByValue: " << x << endl;
+}
+
+void increaseByRef(int& x) {
+    x += 10;
+    cout << "Inside increaseByRef: " << x << endl;
+}
+
+void increaseByPointer(int* x) {
+    (*x) += 10;
+    cout << "Inside increaseByPointer: " << *x << endl;
+}
+
+int main() {
+    int a = 5;
+    cout << "Original value: " << a << endl;
+
+    increaseByValue(a);
+    cout << "After increaseByValue: " << a << endl;
+
+    increaseByRef(a);
+    cout << "After increaseByRef: " << a << endl;
+
+    increaseByPointer(&a);
+    cout << "After increaseByPointer: " << a << endl;
+
+    return 0;
+}
+Hands-On Practice
+1. Swap Implementations
+void swapByValue(int a, int b) {
+    int temp = a;
+    a = b;
+    b = temp;
+    cout << "Inside swapByValue: a=" << a << ", b=" << b << endl;
+}
+
+void swapByRef(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+    cout << "Inside swapByRef: a=" << a << ", b=" << b << endl;
+}
+
+void swapByPointer(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+    cout << "Inside swapByPointer: a=" << *a << ", b=" << *b << endl;
+}
+2. Sum Array Using Const Reference
+#include <vector>
+#include <iostream>
+using namespace std;
+
+int sumArray(const vector<int>& arr) {
+    int sum = 0;
+    for (int val : arr) sum += val;
+    return sum;
+}
+
+int main() {
+    vector<int> numbers = {1, 2, 3, 4};
+    cout << "Sum = " << sumArray(numbers) << endl;
+    return 0;
+}
+________________________________________
+V. Exception Handling in C++
+Concept
+Exception handling allows programs to deal with unexpected situations gracefully using try, throw, and catch.
+Syntax
+try {
+    // code that may throw
+    throw exceptionType;
+} catch (exceptionType e) {
+    // handler
+}
+Examples and Program: Already Provided Above
+Hands-On Practice
+1. File Open Exception
+#include <fstream>
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+void openFile(const string& filename) {
+    ifstream file(filename);
+    if (!file) throw runtime_error("Cannot open file: " + filename);
+    cout << "File opened successfully." << endl;
+}
+
+int main() {
+    try {
+        openFile("sample.txt");
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+    return 0;
+}
+2. Simple Calculator with Exception Handling
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+int calculate(int a, int b, char op) {
+    switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/':
+            if (b == 0) throw invalid_argument("Division by zero");
+            return a / b;
+        default:
+            throw invalid_argument("Invalid operator");
+    }
+}
+
+int main() {
+    try {
+        cout << "Result: " << calculate(10, 0, '/') << endl;
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+    return 0;
+}
+3. GPA Input Validation
+#include <iostream>
+#include <stdexcept>
+using namespace std;
+
+void checkGPA(double gpa) {
+    if (gpa < 0.0 || gpa > 4.0)
+        throw out_of_range("GPA must be between 0.0 and 4.0");
+    cout << "Valid GPA: " << gpa << endl;
+}
+
+int main() {
+    double gpa;
+    cout << "Enter GPA: ";
+    cin >> gpa;
+
+    try {
+        checkGPA(gpa);
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+    return 0;
+}
+________________________________________
+VI. Constructors and Destructors
+Concept
+Constructors and destructors are special member functions used to initialize and clean up objects.
+•	Constructor: Automatically called when an object is created.
+•	Destructor: Automatically called when an object is destroyed.
+Syntax
+class ClassName {
+public:
+    ClassName();             // Default constructor
+    ClassName(int x);        // Parameterized constructor
+    ~ClassName();            // Destructor
+};
+Example
+#include <iostream>
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int id;
+
+public:
+    Student() {
+        name = "Unknown";
+        id = -1;
+        cout << "Default Constructor called" << endl;
+    }
+
+    Student(string n, int i) {
+        name = n;
+        id = i;
+        cout << "Parameterized Constructor called" << endl;
+    }
+
+    ~Student() {
+        cout << "Destructor called for " << name << endl;
+    }
+
+    void display() {
+        cout << "Name: " << name << ", ID: " << id << endl;
+    }
+};
+
+int main() {
+    Student s1;
+    Student s2("Alice", 101);
+    s1.display();
+    s2.display();
+    return 0;
+}
+Key Notes
+•	If no constructor is defined, C++ provides a default one.
+•	Constructors can be overloaded.
+•	Destructor has no parameters and cannot be overloaded.
+•	Constructors and destructors are invoked automatically.
+Hands-On Practice
+1. Add logging to constructor/destructor to trace object lifecycle. 2. Create a class Timer that prints when it's started and stopped.
+#include <iostream>
+using namespace std;
+
+class Timer {
+public:
+    Timer() { cout << "Timer started." << endl; }
+    ~Timer() { cout << "Timer stopped." << endl; }
+};
+
+int main() {
+    Timer t;
+    cout << "Doing some work..." << endl;
+    return 0;
+}
+
+
+
