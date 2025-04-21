@@ -1,0 +1,366 @@
+Object-Oriented Analysis, Design, and Programming – Week 4a Lecture Notes
+
+
+I. Introduction (10 minutes)
+
+
+Review: Procedural vs. Object-Oriented Programming
+Procedural: Focuses on a sequence of instructions (algorithms). Data and functions are separate.
+Object-Oriented: Focuses on objects, which combine data (attributes) and functions (methods).
+Importance of OOP:
+Modularity: Breaking down complex problems into smaller, manageable objects.
+Reusability: Creating reusable components (classes) that can be used in multiple projects.
+Maintainability: Easier to modify and debug code due to modularity and encapsulation.
+Agile Values:
+Individuals and interactions over processes and tools.
+Working software over comprehensive documentation.
+Customer collaboration over contract negotiation.
+Responding to change over following a plan.
+Assignment Problem:
+Question: "Consider a project to develop a simple text-based game. How would you approach this problem using procedural programming versus object-oriented programming? What are the potential benefits of using OOP in this scenario?"
+
+II. Objects and Classes (20 minutes)
+
+
+Objects:
+Definition: An object has state (attributes), exhibits some well-defined behavior (methods), and has a unique identity.
+Modeling real-world entities: Objects represent real-world entities in code (e.g., a car, a bank account, a student).
+Key Takeaway: Objects are instances of classes, representing specific entities with data and behavior.
+Classes:
+Definition: A user-defined type that serves as a blueprint for creating objects. It defines the attributes and methods that objects of that class will have.
+Relationship between classes and objects: A class is a template, and an object is a specific instance created from that template.
+Example: class Fruit { ... }; (Mango, Apple, Orange as objects of the Fruit class).
+Key Takeaway: Classes define the structure and behavior of objects.
+Summary Chart:
+
+Feature		|Object	C	|lass
+Definition		|Instance of a class		|Blueprint for creating objects
+Nature		|Dynamic		|Static
+Example		|MyCar (specific instance of a Car class)		|Car (defines properties of all car objects)
+
+Assignment Problem:
+Question: "Identify five real-world objects and describe their key attributes (state) and behaviors. Then, design a simple class diagram for each object, representing its attributes and methods."
+
+III. Data Abstraction and Encapsulation (30 minutes)
+
+
+Data Abstraction:
+Definition: Representing essential features of an object without including background details or explanations. Focusing on what an object does, not how it does it.
+Hiding implementation details: The user interacts with the object through a simplified interface, without needing to know the underlying complexities.
+Example: Viewing a car as a car, not as individual components. You know how to drive it, but you don't need to know how the engine works internally.
+Key Takeaway: Abstraction simplifies complex systems by focusing on essential details.
+Encapsulation:
+Definition: Wrapping data (attributes) and functions (methods) into a single unit (class). Bundling the data and the code that operates on that data together.
+Data hiding: Protecting data from external access. Preventing direct access to the internal data of an object from outside the class.
+Access specifiers:
+private: Members can only be accessed from within the same class.
+public: Members can be accessed from anywhere.
+protected: Members can be accessed from within the same class and its derived classes.
+Getters and setters: Public methods that provide controlled access to private data. Getter methods retrieve the value of a private attribute, while setter methods allow modifying the value of a private attribute.
+Key Takeaway: Encapsulation protects data integrity and promotes modularity.
+Abstraction vs. Encapsulation:
+Abstraction: Hiding complexity.
+Encapsulation: Hiding data.
+Summary Chart:
+
+Feature	|Abstraction	|	Encapsulation
+Purpose	|	Hiding complexity	|	Hiding data
+Level		|Design/Interface		|Implementation
+Implementation		|Abstract classes, interfaces		|Access modifiers (private, protected, public)
+Methods		|Showing essential details		|Bundling data and methods
+
+Assignment Problem:
+Question: "Design a Student class with attributes like name, studentID, and GPA. Implement proper encapsulation by making the attributes private and providing public getter and setter methods. Explain how abstraction is applied in this class."
+
+IV. C++ Examples (40 minutes)
+
+
+Example 1: Bank Account
+Class: BankAccount
+Attributes: accountNumber (private), balance (private), ownerName (private)
+Methods: deposit() (public), withdraw() (public), getBalance() (public), getAccountNumber() (public)
+Use Case: Demonstrates encapsulation and data hiding.
+
+
+#include <iostream>
+#include <string>
+
+class BankAccount {
+private:
+    std::string accountNumber;
+    double balance;
+    std::string ownerName;
+
+public:
+    BankAccount(std::string accNum, double initialBalance, std::string name) :
+        accountNumber(accNum), balance(initialBalance), ownerName(name) {}
+
+    void deposit(double amount) {
+        balance += amount;
+        std::cout << "Deposited " << amount << " into account " << accountNumber << std::endl;
+    }
+
+    void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            std::cout << "Withdrew " << amount << " from account " << accountNumber << std::endl;
+        } else {
+            std::cout << "Insufficient balance in account " << accountNumber << std::endl;
+        }
+    }
+
+    double getBalance() const {
+        return balance;
+    }
+
+    std::string getAccountNumber() const {
+        return accountNumber;
+    }
+
+    std::string getOwnerName() const {
+        return ownerName;
+    }
+};
+
+int main() {
+    BankAccount myAccount("123456789", 1000.0, "John Doe");
+    std::cout << "Account Number: " << myAccount.getAccountNumber() << std::endl;
+    std::cout << "Owner Name: " << myAccount.getOwnerName() << std::endl;
+    std::cout << "Initial Balance: " << myAccount.getBalance() << std::endl;
+    myAccount.deposit(500.0);
+    std::cout << "Balance after deposit: " << myAccount.getBalance() << std::endl;
+    myAccount.withdraw(200.0);
+    std::cout << "Balance after withdrawal: " << myAccount.getBalance() << std::endl;
+    myAccount.withdraw(2000.0); // Test insufficient balance
+    std::cout << "Final Balance: " << myAccount.getBalance() << std::endl;
+    return 0;
+}
+
+Example 2: Employee Management
+Class: Employee
+Attributes: name (private), salary (private), employeeID (private)
+Methods: setSalary() (public), getSalary() (public), getEmployeeID() (public), getName() (public)
+Use Case: Demonstrates encapsulation, data hiding, and controlled access using getter/setter methods.
+
+
+#include <iostream>
+#include <string>
+
+class Employee {
+private:
+    std::string name;
+    int salary;
+    int employeeID;
+
+public:
+    Employee(std::string empName, int initialSalary, int id) :
+        name(empName), salary(initialSalary), employeeID(id) {}
+
+    void setSalary(int s) {
+        salary = s;
+    }
+
+    int getSalary() const {
+        return salary;
+    }
+
+    int getEmployeeID() const {
+        return employeeID;
+    }
+
+    std::string getName() const {
+        return name;
+    }
+};
+
+int main() {
+    Employee myObj("Alice Smith", 60000, 101);
+    std::cout << "Employee Name: " << myObj.getName() << std::endl;
+    std::cout << "Employee ID: " << myObj.getEmployeeID() << std::endl;
+    std::cout << "Initial Salary: " << myObj.getSalary() << std::endl;
+    myObj.setSalary(70000);
+    std::cout << "Updated Salary: " << myObj.getSalary() << std::endl;
+    return 0;
+}
+
+Example 3: Simple Vehicle Hierarchy
+Abstract Class: Vehicle
+Attributes: make (protected), model (protected)
+Virtual Methods: startEngine() (virtual), accelerate() (virtual), displayInfo() (virtual)
+Concrete Classes: Car, Motorcycle
+Use Case: Demonstrates abstraction and polymorphism without requiring pure virtual functions.
+
+
+#include <iostream>
+#include <string>
+
+class Vehicle {
+protected:
+    std::string make;
+    std::string model;
+
+public:
+    Vehicle(std::string vehicleMake, std::string vehicleModel) : make(vehicleMake), model(vehicleModel) {}
+
+    virtual void startEngine() {
+        std::cout << "Vehicle engine started." << std::endl;
+    }
+
+    virtual void accelerate() {
+        std::cout << "Vehicle is accelerating." << std::endl;
+    }
+
+    virtual void displayInfo() {
+        std::cout << "Make: " << make << std::endl;
+        std::cout << "Model: " << model << std::endl;
+    }
+
+    virtual ~Vehicle() {} // Virtual destructor for proper cleanup in inheritance
+};
+
+class Car : public Vehicle {
+private:
+    int numberOfDoors;
+
+public:
+    Car(std::string carMake, std::string carModel, int doors) : Vehicle(carMake, carModel), numberOfDoors(doors) {}
+
+    void startEngine() override {
+        std::cout << "Car engine started (Vroom!)." << std::endl;
+    }
+
+    void accelerate() override {
+        std::cout << "Car is accelerating smoothly." << std::endl;
+    }
+
+    void displayInfo() override {
+        Vehicle::displayInfo(); // Call base class method to display common info
+        std::cout << "Number of Doors: " << numberOfDoors << std::endl;
+    }
+};
+
+class Motorcycle : public Vehicle {
+private:
+    bool hasSidecar;
+
+public:
+    Motorcycle(std::string bikeMake, std::string bikeModel, bool sidecar) : Vehicle(bikeMake, bikeModel), hasSidecar(sidecar) {}
+
+    void startEngine() override {
+        std::cout << "Motorcycle engine started (Brum!)." << std::endl;
+    }
+
+    void accelerate() override {
+        std::cout << "Motorcycle is accelerating quickly." << std::endl;
+    }
+
+    void displayInfo() override {
+        Vehicle::displayInfo(); // Call base class method to display common info
+        std::cout << "Has Sidecar: " << (hasSidecar ? "Yes" : "No") << std::endl;
+    }
+};
+
+int main() {
+    Vehicle* genericVehicle = new Vehicle("Generic", "Vehicle");
+    Car* myCar = new Car("Toyota", "Camry", 4);
+    Motorcycle* myMotorcycle = new Motorcycle("Harley-Davidson", "Sportster", false);
+
+    std::cout << "Generic Vehicle:" << std::endl;
+    genericVehicle->startEngine();
+    genericVehicle->accelerate();
+    genericVehicle->displayInfo();
+    std::cout << std::endl;
+
+    std::cout << "Car:" << std::endl;
+    myCar->startEngine();
+    myCar->accelerate();
+    myCar->displayInfo();
+    std::cout << std::endl;
+
+    std::cout << "Motorcycle:" << std::endl;
+    myMotorcycle->startEngine();
+    myMotorcycle->accelerate();
+    myMotorcycle->displayInfo();
+    std::cout << std::endl;
+
+    delete genericVehicle;
+    delete myCar;
+    delete myMotorcycle;
+
+    return 0;
+}
+
+Assignment Problem:
+Question: "Extend the BankAccount class to include a transactionHistory (a std::vector<std::string>). Modify the deposit() and withdraw() methods to record each transaction in the history. Add a method printTransactionHistory() to display the history. How does this modification enhance the class and demonstrate encapsulation?"
+
+V. Binding (15 minutes)
+
+
+Definition: Linking a procedure call to the code to be executed in response to the call. Connecting a function call to the actual function code that will be executed.
+Static Binding (Early Binding):
+Happens at compile time: The compiler knows which function will be called at compile time.
+Example: Function overloading. When you have multiple functions with the same name but different parameters, the compiler determines which function to call based on the arguments you pass.
+Key Takeaway: Static binding is efficient but less flexible.
+Dynamic Binding (Late Binding):
+Happens at runtime: The function to be called is determined while the program is running.
+Requires virtual functions: Virtual functions are declared in a base class and can be overridden in derived classes.
+Example: Overriding virtual functions in derived classes. When you call a virtual function through a pointer to a base class object, the actual function that is executed depends on the type of object being pointed to.
+Key Takeaway: Dynamic binding provides flexibility and polymorphism.
+Summary Chart:
+
+Feature	|	Static Binding		|Dynamic Binding
+Timing		|Compile time		|Runtime
+Mechanism		|Function overloading		|Virtual functions, inheritance
+Flexibility		|Less flexible		|More flexible
+Performance		|More efficient		|Less efficient (due to runtime overhead)
+
+Assignment Problem:
+Question: "Explain the difference between static and dynamic binding in your own words. Provide a C++ code example that demonstrates both concepts. Analyze the trade-offs between static and dynamic binding in terms of performance and flexibility."
+
+VI. Access Specifiers (5 minutes)
+
+
+Review:
+
+public: Members are accessible from outside the class.
+private: Members cannot be accessed (or viewed) from outside the class. It is considered good practice to declare your class attributes as private. By default, all members of a class are private if we don’t specify an access specifier.
+protected: Members cannot be accessed from outside the class, however, they can be accessed in inherited classes.
+Importance: Controlling access to class members to enforce encapsulation and data hiding.
+
+Key Takeaway: Access specifiers enforce encapsulation and data hiding.
+
+Assignment Problem:
+
+Question: "Design a class with at least three attributes and methods. Use all three access specifiers (public, private, protected) appropriately. Explain why you chose each access specifier for each member."
+
+VII. Static Members and Functions (5 minutes)
+
+
+Static Data Members:
+
+Shared by all objects of the class: There is only one copy of a static data member for the entire class, regardless of how many objects are created.
+Initialized only once: Static data members are initialized when the program starts, not when an object is created.
+Key Takeaway: Static data members are useful for storing class-level information that is shared by all objects of the class.
+Static Member Functions:
+
+Can access only static members: Static member functions can only access static data members and other static member functions of the same class.
+Called using the class name: Static member functions are called using the class name instead of an object.
+Key Takeaway: Static member functions operate on class-level data and do not depend on any specific object.
+Assignment Problem:
+
+Question: "Create a class that tracks the number of instances created using a static data member and a static member function to retrieve the count. Explain the benefits of using static members in this scenario."
+
+VIII. Nested Classes (5 minutes)
+
+
+Definition: A class defined within another class. The inner class is called the Nested class, and the outer class is known as the Enclosing class.
+
+Use Cases:
+
+Organizing related classes: Grouping classes that are logically related to each other.
+Encapsulation: Hiding the inner class from the outside world.
+Key Takeaway: Nested classes provide a way to group related classes and control their visibility.
+
+Assignment Problem:
+
+Question: "Design a Computer class and a nested Processor class. The Processor class should have attributes like clockSpeed and manufacturer. Explain how the nested class helps organize the code and improve encapsulation."
