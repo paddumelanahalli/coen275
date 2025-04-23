@@ -1,0 +1,569 @@
+Object-Oriented Analysis, Design, and Programming
+Week 4b: Inheritance and Constructors
+
+Objective: By the end of this week, you should be able to confidently implement inheritance and constructors (including copy and move constructors) in C++ in your own projects.
+
+I. Introduction (Review)
+What's an Object? Remember, an object has:
+State: Data (attributes) it holds.
+Behavior: What it can do (methods).
+Identity: What makes it unique.
+OOP Principles: Keep these in mind as we go: Abstraction, Encapsulation, Modularity, Hierarchy, Typing, Concurrency, Persistence.
+Why Inheritance and Constructors? These are fundamental tools for building robust, reusable, and efficient C++ code.
+
+II. Inheritance
+
+
+The "Is-A" Relationship: Inheritance lets us create new classes based on existing ones. Think of it as an "is-a" relationship:
+
+A Poodle is a Dog.
+A Car is a Vehicle.
+Superclass vs. Subclass:
+
+Superclass (Base Class): The more general class (e.g., Animal).
+Subclass (Derived Class): The more specific class that inherits from the superclass (e.g., Dog).
+Types of Inheritance:
+
+Single Inheritance: A class inherits from only one base class.
+
+Class A -> Class B
+Multiple Inheritance: A class inherits from multiple base classes.
+
+Class A, Class B -> Class C
+Multilevel Inheritance: A class inherits from another derived class.
+
+Class A -> Class B -> Class C
+Hierarchical Inheritance: Several classes inherit from a single base class.
+
+Class A -> Class B, Class A -> Class C
+Hybrid Inheritance: A combination of two or more of the above types. (Draw a diagram to visualize this!)
+
+Access Control and Inheritance: Pay close attention to this! It determines what members of the base class are accessible in the derived class.
+
+Access Specifier in Base Class	| How it appears in Derived Class (Public Inheritance)	| How it appears in Derived Class (Protected Inheritance)	|How it appears in Derived Class (Private Inheritance)
+private	                          Inaccessible	                                          Inaccessible	                                            Inaccessible
+protected	                        protected	                                              protected	                                                private
+public	                          public	                                                protected	                                                private
+
+Code Example: Let's start with a basic example:
+
+#include <iostream>
+#include <string>
+
+class Animal {
+private:
+    std::string name;
+public:
+    Animal(std::string name) : name(name) {} // Constructor
+    std::string getName() const { return name; }
+    virtual void makeSound() const { std::cout << "Generic animal sound" << std::endl; }
+};
+
+class Dog : public Animal {
+public:
+    Dog(std::string name) : Animal(name) {} // Constructor calls base class constructor
+    void makeSound() const override { std::cout << "Woof!" << std::endl; }
+};
+
+int main() {
+    Animal myAnimal("Generic Animal");
+    Dog myDog("Buddy");
+
+    std::cout << myAnimal.getName() << ": ";
+    myAnimal.makeSound(); // Output: Generic animal sound
+
+    std::cout << myDog.getName() << ": ";
+    myDog.makeSound();    // Output: Woof!
+
+    return 0;
+}
+
+Exercise: Now, create a Cat class that inherits from Animal and has its own makeSound() implementation.
+
+#include <iostream>
+#include <string>
+
+class Animal {
+private:
+    std::string name;
+public:
+    Animal(std::string name) : name(name) {}
+    std::string getName() const { return name; }
+    virtual void makeSound() const { std::cout << "Generic animal sound" << std::endl; }
+};
+
+class Dog : public Animal {
+public:
+    Dog(std::string name) : Animal(name) {}
+    void makeSound() const override { std::cout << "Woof!" << std::endl; }
+};
+
+class Cat : public Animal { // New Cat class
+public:
+    Cat(std::string name) : Animal(name) {}
+    void makeSound() const override { std::cout << "Meow!" << std::endl; }
+};
+
+int main() {
+    Animal myAnimal("Generic Animal");
+    Dog myDog("Buddy");
+    Cat myCat("Whiskers"); // Cat object
+
+    std::cout << myAnimal.getName() << ": ";
+    myAnimal.makeSound();
+
+    std::cout << myDog.getName() << ": ";
+    myDog.makeSound();
+
+    std::cout << myCat.getName() << ": "; // Cat output
+    myCat.makeSound();
+
+    return 0;
+}
+
+Ambiguity Resolution: What happens if two base classes have the same method name? We use the scope resolution operator (::) to specify which class's method we want to call.
+
+#include <iostream>
+
+class A {
+public:
+    void display() { std::cout << "A's display" << std::endl; }
+};
+
+class B {
+public:
+    void display() { std::cout << "B's display" << std::endl; }
+};
+
+class C : public A, public B {
+public:
+    void display() {
+        A::display(); // Call A's display
+    }
+};
+
+int main() {
+    C myObject;
+    myObject.display();  // Output: A's display
+    myObject.B::display(); // Output: B's display (explicitly calling B's display)
+    return 0;
+}
+
+III. Constructors and Destructors
+
+Constructors: Special methods used to initialize objects.
+
+Constructors are NOT inherited.
+Initialization Order: Base class constructors run first, then member initializers, then the constructor body.
+Code Example:
+
+#include <iostream>
+#include <string>
+
+class Base {
+private:
+    int baseValue;
+public:
+    Base(int value) : baseValue(value) {
+        std::cout << "Base constructor called with value: " << value << std::endl;
+    }
+    int getBaseValue() const { return baseValue; }
+};
+
+class Derived : public Base {
+private:
+    std::string derivedString;
+public:
+    Derived(int value, std::string str) : Base(value), derivedString(str) { // Initializer list
+        std::cout << "Derived constructor called with string: " << str << std::endl;
+    }
+    std::string getDerivedString() const { return derivedString; }
+};
+
+int main() {
+    Derived myDerivedObject(10, "Hello");
+    std::cout << "Base value: " << myDerivedObject.getBaseValue() << std::endl;
+    std::cout << "Derived string: " << myDerivedObject.getDerivedString() << std::endl;
+    return 0;
+}
+
+Copy Constructors: Create a new object as a copy of an existing one.
+
+#include <iostream>
+
+class MyClass {
+private:
+    int* data;
+public:
+    MyClass(int value) {
+        data = new int(value);
+        std::cout << "Constructor: data = " << *data << std::endl;
+    }
+
+    // Copy Constructor (Deep Copy)
+    MyClass(const MyClass& other) {
+        data = new int(*other.data); // Allocate new memory and copy the value
+        std::cout << "Copy Constructor: data = " << *data << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor: data = " << *data << std::endl;
+        delete data;
+    }
+
+    int getValue() const { return *data; }
+};
+
+int main() {
+    MyClass obj1(10);
+    MyClass obj2 = obj1; // Copy constructor called
+    std::cout << "obj1 value: " << obj1.getValue() << std::endl;
+    std::cout << "obj2 value: " << obj2.getValue() << std::endl;
+    return 0;
+}
+Move Constructors: Transfer ownership of resources from one object to another (more efficient than copying).
+
+#include <iostream>
+
+class MyClass {
+private:
+    int* data;
+public:
+    MyClass(int value) {
+        data = new int(value);
+        std::cout << "Constructor: data = " << *data << std::endl;
+    }
+
+    // Move Constructor
+    MyClass(MyClass&& other) : data(other.data) {
+        other.data = nullptr; // Transfer ownership
+        std::cout << "Move Constructor: data = " << *data << std::endl;
+    }
+
+    ~MyClass() {
+        if (data) {
+            std::cout << "Destructor: data = " << *data << std::endl;
+            delete data;
+        } else {
+            std::cout << "Destructor: data = nullptr" << std::endl;
+        }
+    }
+
+    int getValue() const { return (data != nullptr) ? *data : 0; }
+};
+
+int main() {
+    MyClass obj1(10);
+    MyClass obj2 = std::move(obj1); // Move constructor called
+    std::cout << "obj1 value: " << obj1.getValue() << std::endl; // Output: 0 (nullptr)
+    std::cout << "obj2 value: " << obj2.getValue() << std::endl; // Output: 10
+    return 0;
+}
+Destructors: Special methods used to clean up resources when an object is destroyed.
+
+Destructors are NOT inherited.
+Destruction Order: Destructor body runs, then member destructors (in reverse order of declaration), then base class destructors (in reverse order of inheritance).
+
+#include <iostream>
+
+class MyClass {
+private:
+    int* data;
+public:
+    MyClass(int value) {
+        data = new int(value);
+        std::cout << "Constructor: data = " << *data << std::endl;
+    }
+
+    ~MyClass() {
+        std::cout << "Destructor: data = " << *data << std::endl;
+        delete data;
+    }
+
+    int getValue() const { return *data; }
+};
+
+int main() {
+    MyClass obj(10);
+    std::cout << "Value: " << obj.getValue() << std::endl;
+    return 0; // Destructor called when obj goes out of scope
+}
+
+Exercise: Add copy and move constructors to the Animal, Dog, and Cat classes. Make sure to handle memory management correctly.
+
+#include <iostream>
+#include <string>
+
+class Animal {
+private:
+    std::string* name; // Dynamically allocated name
+public:
+    Animal(std::string name) : name(new std::string(name)) {
+        std::cout << "Animal Constructor: " << *this->name << std::endl;
+    }
+
+    // Copy Constructor
+    Animal(const Animal& other) : name(new std::string(*other.name)) {
+        std::cout << "Animal Copy Constructor: " << *this->name << std::endl;
+    }
+
+    // Move Constructor
+    Animal(Animal&& other) : name(other.name) {
+        other.name = nullptr;
+        std::cout << "Animal Move Constructor: " << *this->name << std::endl;
+    }
+
+    ~Animal() {
+        if (name) {
+            std::cout << "Animal Destructor: " << *name << std::endl;
+            delete name;
+        }
+    }
+
+    std::string getName() const { return (name != nullptr) ? *name : ""; }
+    virtual void makeSound() const { std::cout << "Generic animal sound" << std::endl; }
+};
+
+class Dog : public Animal {
+public:
+    Dog(std::string name) : Animal(name) {
+        std::cout << "Dog Constructor: " << getName() << std::endl;
+    }
+
+    ~Dog() {
+        std::cout << "Dog Destructor: " << getName() << std::endl;
+    }
+
+    void makeSound() const override { std::cout << "Woof!" << std::endl; }
+};
+
+int main() {
+    Animal myAnimal("Generic Animal");
+    Dog myDog("Buddy");
+
+    Animal myAnimal2 = myAnimal; // Copy constructor
+    Animal myAnimal3 = std::move(myAnimal); // Move constructor
+
+    std::cout << myAnimal2.getName() << std::endl;
+    return 0;
+}
+
+IV. Association, Aggregation, and Composition
+
+Association: A general relationship between classes. Objects have independent lifecycles.
+
+Example: A Person lives at an Address.
+
+#include <iostream>
+#include <string>
+
+class Address {
+private:
+    std::string street;
+    std::string city;
+public:
+    Address(std::string street, std::string city) : street(street), city(city) {}
+    void displayAddress() const {
+        std::cout << street << ", " << city << std::endl;
+    }
+};
+
+class Person {
+private:
+    std::string name;
+    Address* address; // Association: Person *has a* Address
+public:
+    Person(std::string name, Address* address) : name(name), address(address) {}
+    void displayPerson() const {
+        std::cout << "Name: " << name << std::endl;
+        std::cout << "Address: ";
+        address->displayAddress();
+    }
+};
+
+int main() {
+    Address* myAddress = new Address("123 Main St", "Anytown");
+    Person myPerson("John Doe", myAddress);
+    myPerson.displayPerson();
+
+    delete myAddress; // Address object must be deleted separately
+    return 0;
+}
+Aggregation: A "has-a" relationship where objects have independent lifecycles, but there's ownership.
+
+Example: A Company has Employees.
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+class Employee {
+private:
+    std::string name;
+public:
+    Employee(std::string name) : name(name) {}
+    std::string getName() const { return name; }
+};
+
+class Company {
+private:
+    std::string name;
+    std::vector<Employee*> employees; // Aggregation: Company *has* Employees
+public:
+    Company(std::string name) : name(name) {}
+    void addEmployee(Employee* employee) {
+        employees.push_back(employee);
+    }
+    void displayCompany() const {
+        std::cout << "Company: " << name << std::endl;
+        std::cout << "Employees:" << std::endl;
+        for (Employee* employee : employees) {
+            std::cout << "- " << employee->getName() << std::endl;
+        }
+    }
+};
+
+int main() {
+    Company myCompany("Acme Corp");
+    Employee* emp1 = new Employee("Alice");
+    Employee* emp2 = new Employee("Bob");
+
+    myCompany.addEmployee(emp1);
+    myCompany.addEmployee(emp2);
+    myCompany.displayCompany();
+
+    delete emp1; // Employees are deleted separately
+    delete emp2;
+    return 0;
+}
+Composition: A strong "has-a" relationship where the contained object's lifecycle depends on the container object.
+
+Example: A Body has a Heart.
+
+#include <iostream>
+#include <string>
+
+class Heart {
+public:
+    Heart() {
+        std::cout << "Heart created" << std::endl;
+    }
+    ~Heart() {
+        std::cout << "Heart destroyed" << std::endl;
+    }
+    void pump() const {
+        std::cout << "Heart pumping" << std::endl;
+    }
+};
+
+class Body {
+private:
+    Heart heart; // Composition: Body *has a* Heart (Heart's lifecycle is tied to Body)
+public:
+    Body() {
+        std::cout << "Body created" << std::endl;
+    }
+    ~Body() {
+        std::cout << "Body destroyed" << std::endl;
+    }
+    void function() const {
+        heart.pump();
+    }
+};
+
+int main() {
+    Body myBody;
+    myBody.function();
+    return 0; // Heart is destroyed when Body is destroyed
+}
+Diagrams: (Draw UML diagrams for each of these relationships – it helps!)
+
+Exercise: Think of real-world examples of association, aggregation, and composition.
+
+
+V. Advanced Topics (For those who want a challenge!)
+Advanced Programming Challenges:
+
+I. Inheritance and Polymorphism:
+Abstract Base Class and Polymorphic Behavior:
+
+Scenario: Design a system for handling different types of media (e.g., Audio, Video, Image).
+Task:
+Create an abstract base class Media with a pure virtual function play().
+Implement derived classes Audio, Video, and Image that inherit from Media and provide their own implementations of play().
+Use polymorphism to create a vector of Media pointers and call the play() function on each element.
+Advanced Extension: Add a metadata() function to the Media class that returns a string containing relevant metadata (e.g., title, artist, duration, resolution). Make this function virtual and override it in the derived classes.
+Focus: Abstract classes, pure virtual functions, polymorphism, dynamic dispatch.
+Virtual Inheritance and the Diamond Problem:
+
+Scenario: Consider a class hierarchy where Animal is the base class, and Mammal and Bird inherit from Animal. Then, FlyingMammal (e.g., a Bat) inherits from both Mammal and Bird.
+Task:
+Implement this class hierarchy without virtual inheritance. Observe the issues that arise (e.g., duplicate Animal members in FlyingMammal).
+Modify the inheritance structure to use virtual inheritance to solve the diamond problem.
+Explain the role of virtual base class constructors in initializing the shared Animal base class.
+Focus: Virtual inheritance, diamond problem, constructor initialization order.
+CRTP (Curiously Recurring Template Pattern):
+
+Scenario: You want to add logging functionality to multiple classes without using inheritance in the traditional sense.
+Task:
+Implement a Logger template class that takes a derived class as a template parameter (CRTP).
+Provide a log() method in the Logger class that can access the derived class's members.
+Create several classes (e.g., DatabaseConnection, NetworkRequest) that inherit from the Logger template.
+Demonstrate how to use the log() method in each of these classes to log relevant information.
+Focus: CRTP, static polymorphism, code reuse.
+
+II. Constructors and Resource Management:
+Custom Memory Allocator:
+
+Scenario: You have a class that is frequently created and destroyed, leading to potential memory fragmentation.
+Task:
+Implement a custom memory allocator for this class using techniques like object pools or a simple heap manager.
+Override the new and delete operators for the class to use your custom allocator.
+Compare the performance of your custom allocator to the default allocator in terms of speed and memory usage.
+Focus: Memory management, operator overloading, performance optimization.
+Rule of Zero/Five (Three/Five) and Smart Pointers:
+
+Scenario: You have a class that manages dynamically allocated resources.
+Task:
+Implement the class without using smart pointers. Observe the potential for memory leaks and other resource management issues.
+Refactor the class to use smart pointers (std::unique_ptr, std::shared_ptr, std::weak_ptr) to manage the resources automatically.
+Ensure that your class adheres to the Rule of Zero/Five (Three/Five). This means that if your class doesn't need a custom destructor, copy constructor, copy assignment operator, move constructor, or move assignment operator, then you shouldn't define them. If you need one, you likely need all five (or three, if you're only concerned with C++11 and later).
+Focus: Resource management, smart pointers, exception safety, RAII (Resource Acquisition Is Initialization).
+Placement New and In-Place Construction:
+
+Scenario: You want to construct an object in a pre-allocated memory buffer.
+Task:
+Allocate a raw memory buffer using operator new(size_t, void*).
+Use placement new to construct an object of your class in the buffer.
+Demonstrate how to access and use the object.
+Properly destroy the object using explicit destructor call and deallocate the memory.
+Focus: Memory management, placement new, in-place construction.
+
+III. Object Relationships and Design Patterns:
+Composite Pattern:
+
+Scenario: You need to represent a hierarchical structure of objects, where individual objects and compositions of objects can be treated uniformly.
+Task:
+Implement the Composite pattern to represent a file system, where files and directories can be treated as FileSystemNode objects.
+Provide methods for adding, removing, and listing children of a directory.
+Implement a getSize() method that calculates the total size of a file or directory (including the sizes of its children).
+Focus: Design patterns, object composition, hierarchical structures.
+Observer Pattern and Event Handling:
+
+Scenario: You want to design a system where multiple objects (observers) are notified when the state of another object (subject) changes.
+Task:
+Implement the Observer pattern to create a system where multiple Display objects are notified when the data in a Sensor object changes.
+Provide methods for attaching and detaching observers from the subject.
+When the Sensor's data changes, notify all attached Display objects to update their display.
+Advanced Extension: Use std::function and lambda expressions to allow observers to register custom callback functions.
+Focus: Design patterns, event handling, loose coupling.
+
+VI. Summary and Q&A
+We covered a lot today! Make sure you understand:
+Inheritance (types, access control)
+Constructors (copy, move)
+Destructors
+Association, Aggregation, Composition
+Homework: Review these notes, try the exercises, and explore the GitHub repository.
+
+Remember: Practice is key! The more you code, the better you'll understand these concepts. Good luck, and see you next week!
