@@ -221,7 +221,7 @@ Program 2: Abstract Factory Pattern
 
 
 
-V. Friend Functions and Classes (20 minutes)
+Friend Functions and Classes (20 minutes)
 •	Friend Function Definition: A non-member function that can access private and protected members of a class.
 •	Friend Class Definition: A class whose members can access private and protected members of another class.
 •	Use Cases: Operations between two different classes.
@@ -599,8 +599,125 @@ int main() {
     return 0;
 }
 
+Function Overloading
+This program demonstrates function overloading within the same class and in unrelated functions. Function overloading allows you to define multiple functions with the same name but different parameter lists (different number of parameters, different types of parameters, or both). The compiler chooses the correct function to call based on the arguments passed in the function call.
 
-III. Advanced Polymorphism and Virtual Functions
+#include <iostream>
+
+class Calculator {
+public:
+    // Overloaded add functions
+    int add(int a, int b) {
+        std::cout << "Adding two integers\n";
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        std::cout << "Adding two doubles\n";
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        std::cout << "Adding three integers\n";
+        return a + b + c;
+    }
+};
+
+// Overloaded function outside the class
+void printValue(int value) {
+    std::cout << "Integer value: " << value << std::endl;
+}
+
+void printValue(double value) {
+    std::cout << "Double value: " << value << std::endl;
+}
+
+int main() {
+    Calculator calc;
+
+    int sum1 = calc.add(5, 10);
+    std::cout << "Sum1: " << sum1 << std::endl;
+
+    double sum2 = calc.add(2.5, 3.7);
+    std::cout << "Sum2: " << sum2 << std::endl;
+
+    int sum3 = calc.add(1, 2, 3);
+    std::cout << "Sum3: " << sum3 << std::endl;
+
+    printValue(10);
+    printValue(3.14);
+
+    return 0;
+}
+
+Explanation:
+•	Calculator Class: The Calculator class has three add functions, each taking different parameters (two integers, two doubles, and three integers).
+•	printValue Function: There are two printValue functions, one for integers and one for doubles.
+•	Compiler Resolution: The compiler determines which add function or printValue function to call based on the arguments provided in the main function.
+
+Function Overriding
+This program demonstrates function overriding, which occurs when a derived class provides a specific implementation for a virtual function that is already defined in its base class. Overriding allows a derived class to change the behavior of a function inherited from its base class.
+
+#include <iostream>
+
+class Animal {
+public:
+    // Virtual function
+    virtual void makeSound() {
+        std::cout << "Generic animal sound\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+    // Overriding the makeSound function
+    void makeSound() override {
+        std::cout << "Woof!\n";
+    }
+};
+
+class Cat : public Animal {
+public:
+    // Overriding the makeSound function
+    void makeSound() override {
+        std::cout << "Meow!\n";
+    }
+};
+
+int main() {
+    Animal* animal1 = new Animal();
+    Animal* animal2 = new Dog();
+    Animal* animal3 = new Cat();
+
+    animal1->makeSound(); // Calls Animal::makeSound()
+    animal2->makeSound(); // Calls Dog::makeSound()
+    animal3->makeSound(); // Calls Cat::makeSound()
+
+    delete animal1;
+    delete animal2;
+    delete animal3;
+
+    return 0;
+}
+
+Explanation:
+•	Animal Class: The Animal class has a virtual function makeSound(). The virtual keyword is essential for enabling polymorphism.
+•	Dog and Cat Classes: The Dog and Cat classes inherit from Animal and override the makeSound() function to provide their own specific implementations.
+•	Polymorphic Behavior: In the main function, animal2 and animal3 are pointers to Animal objects, but they actually point to Dog and Cat objects, respectively. When makeSound() is called on these pointers, the correct overridden function is called based on the actual type of the object being pointed to. This is runtime polymorphism.
+•	override Keyword: The override keyword (introduced in C++11) is used to explicitly indicate that a function is intended to override a virtual function in the base class. This helps the compiler catch errors if the function signature doesn't match the base class's virtual function.
+
+Key Differences Summarized:
+•	Overloading:
+•	Multiple functions with the same name but different parameter lists.
+•	Resolved at compile time (static polymorphism).
+•	Can occur within a single class or in unrelated functions.
+•	Overriding:
+•	A derived class provides a specific implementation for a virtual function that is already defined in its base class.
+•	Resolved at runtime (dynamic polymorphism).
+•	Requires inheritance and virtual functions.
+
+
+V. Advanced Polymorphism and Virtual Functions
 Observer Pattern with Abstract Classes
 •	Concept: Implement the Observer design pattern using abstract classes and virtual functions.
 •	Description:
@@ -613,7 +730,7 @@ Observer Pattern with Abstract Classes
 •	Create a simple application with a subject (e.g., a data source) and multiple observers (e.g., display elements) that update when the subject's data changes.
 •	Use std::vector or std::list to store the observers.
 
-IV. General Advanced C++ Assignments
+VI. General Advanced C++ Assignments
 
 1.	Smart Pointers: Implement a custom smart pointer class (e.g., unique_ptr, shared_ptr) to manage dynamically allocated memory.
 2.	Custom Container: Create a custom container class (e.g., a linked list, a binary tree) with iterators and memory management.
@@ -621,7 +738,7 @@ IV. General Advanced C++ Assignments
 4.	Networking: Create a simple client-server application using sockets.
 5.	Design Patterns: Implement other design patterns like Singleton, Decorator, or Command.
 
-V. Conclusion (5 minutes)
+VII. Conclusion (5 minutes)
 •	Review: Key concepts covered.
 •	Next Steps: Preview of the next lecture.
 •	Github:  programs 50-55.
