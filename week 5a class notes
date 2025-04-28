@@ -1,0 +1,630 @@
+Week 5 Class Notes:
+I. Introduction (10 minutes)
+•	Course Overview:  - Object-Oriented Analysis, Design, and Programming.
+•	Instructor: Paddu Melanahalli
+•	Key Concepts: Objects, Classes, Inheritance, Polymorphism, Friend Functions/Classes.
+
+II. Objects and Object-Oriented Principles (20 minutes)
+•	Object Definition: State, Behavior, Identity.
+•	Object Modeling: Abstraction, Encapsulation, Modularity, Hierarchy, Typing, Concurrency, Persistence.
+•	OOA, OOD, OOP: Definitions and distinctions.
+
+III. Inheritance (30 minutes)
+•	Definition: Deriving a new class from an existing class.
+•	Benefits: Code reuse.
+•	Access Control: Public, Private, and Protected inheritance. Private members are not inherited.
+•	Containership: A class containing objects of other classes.
+•	Example: Discuss how inheritance can modify a class to fit specific requirements.
+•	Exercise 1 (15 minutes):
+•	Create a base class Animal with properties like name and methods like eat() and makeSound().
+•	Create derived classes Dog and Cat that inherit from Animal. Override the makeSound() method in each derived class to produce the appropriate sound.
+•	Instantiate objects of Dog and Cat and call their methods.
+
+IV. Polymorphism (40 minutes)
+•	Definition: Ability to take more than one form.
+•	Operator Overloading: Example: + operator for integer addition and string concatenation.
+•	Function Overloading: Single function name for different tasks.
+•	Compile-Time Polymorphism: Achieved through function overloading.
+•	Run-Time Polymorphism: Achieved through virtual functions and dynamic binding.
+•	Conditions for Polymorphism: Pointers/references, exchangeable objects (inheritance), virtual functions.
+•	Virtual Functions: Redefining a member function in a derived class while preserving calling properties.
+•	Pure Virtual Functions: Declared with = 0 in the base class, making the class abstract.
+•	Abstract Classes: Cannot be instantiated.
+•	Override vs. Overload:
+•	Overloading: Multiple definitions of a function with different signatures (compile-time).
+•	Overriding: Redefinition of a base class function in a derived class with the same signature (run-time).
+•	Example: Shape -> Circle, Rectangle, Triangle with a draw() function.
+•	Exercise 2 (25 minutes):
+•	Create a base class Shape with a virtual function area().
+•	Create derived classes Rectangle and Circle that inherit from Shape. Override the area() method in each derived class to calculate the area of the respective shape.
+•	Use pointers to Shape to point to objects of Rectangle and Circle and call the area() method. Demonstrate how polymorphism allows the correct area calculation based on the object type.
+
+Program 1: Generic Data Structure with Polymorphism
+•	Concept: Create a generic data structure (like a list or array) that can hold objects of different types, leveraging polymorphism.
+•	Description:
+•	Create an abstract base class called DataElement with a virtual function printData() and a virtual destructor.
+•	Create derived classes like IntegerElement, StringElement, and FloatElement that inherit from DataElement and override printData() to print the data appropriately.
+•	Implement a DataList class that uses a std::vector<DataElement*> to store pointers to DataElement objects.
+•	Implement methods in DataList to add elements, remove elements, and print all elements.
+•	Assignment:
+•	Implement the DataList class.
+•	Add error handling (e.g., check for null pointers).
+•	Implement a sort() method for the DataList that sorts the elements based on a user-provided comparison function (you'll need to use function pointers or std::function). Consider how you would handle sorting elements of different types.
+•	Add a method to save and load the DataList to/from a file.
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <fstream>
+
+class DataElement {
+public:
+    virtual void printData() = 0;
+    virtual ~DataElement() {} // Virtual destructor is important for polymorphic deletion
+    virtual std::string toString() = 0; // Add a toString method for saving to file
+};
+
+class IntegerElement : public DataElement {
+private:
+    int data;
+public:
+    IntegerElement(int data) : data(data) {}
+    void printData() override { std::cout << "Integer: " << data << std::endl; }
+    std::string toString() override { return "Integer:" + std::to_string(data); }
+};
+
+class StringElement : public DataElement {
+private:
+    std::string data;
+public:
+    StringElement(std::string data) : data(data) {}
+    void printData() override { std::cout << "String: " << data << std::endl; }
+    std::string toString() override { return "String:" + data; }
+};
+
+class FloatElement : public DataElement {
+private:
+    float data;
+public:
+    FloatElement(float data) : data(data) {}
+    void printData() override { std::cout << "Float: " << data << std::endl; }
+    std::string toString() override { return "Float:" + std::to_string(data); }
+};
+
+class DataList {
+private:
+    std::vector<DataElement*> elements;
+public:
+    void addElement(DataElement* element) {
+        if (element) {
+            elements.push_back(element);
+        } else {
+            std::cerr << "Error: Null pointer passed to addElement." << std::endl;
+        }
+    }
+
+    void removeElement(int index) {
+        if (index >= 0 && index < elements.size()) {
+            delete elements[index]; // Important: Free the memory
+            elements.erase(elements.begin() + index);
+        } else {
+            std::cerr << "Error: Invalid index for removeElement." << std::endl;
+        }
+    }
+
+    void printAllElements() {
+        for (DataElement* element : elements) {
+            if (element) {
+                element->printData();
+        }
+    }
+}
+    // Sort based on string representation
+    void sort() {
+        std::sort(elements.begin(), elements.end(), [](DataElement* a, DataElement* b) {
+            if (!a || !b) return false; // Handle null pointers
+            return a->toString() < b->toString();
+        });
+    }
+
+    void saveToFile(const std::string& filename) {
+        std::ofstream file(filename);
+        if (file.is_open()) {
+            file << elements.size() << std::endl; // Save the number of elements
+            for (DataElement* element : elements) {
+                if (element) {
+                    file << element->toString() << std::endl;
+                }
+            }
+            file.close();
+        } else {
+            std::cerr << "Error: Could not open file for saving." << std::endl;
+        }
+    }
+
+    void loadFromFile(const std::string& filename) {
+        std::ifstream file(filename);
+        if (file.is_open()) {
+            // Clear existing elements before loading
+            for (DataElement* element : elements) {
+                delete element;
+            }
+            elements.clear();
+
+            int size;
+            file >> size;
+            file.ignore(); // Consume the newline character after reading the size
+
+            for (int i = 0; i < size; ++i) {
+                std::string line;
+                std::getline(file, line);
+                std::string type = line.substr(0, line.find(':'));
+                std::string value = line.substr(line.find(':') + 1);
+
+                if (type == "Integer") {
+                    addElement(new IntegerElement(std::stoi(value)));
+                } else if (type == "String") {
+                    addElement(new StringElement(value));
+                } else if (type == "Float") {
+                    addElement(new FloatElement(std::stof(value)));
+                }
+            }
+            file.close();
+        } else {
+            std::cerr << "Error: Could not open file for loading." << std::endl;
+        }
+    }
+
+
+    ~DataList() {
+        // Important:  Free the memory allocated for each element
+        for (DataElement* element : elements) {
+            delete element;
+        }
+    }
+};
+
+int main() {
+    DataList myList;
+    myList.addElement(new IntegerElement(10));
+    myList.addElement(new StringElement("Hello"));
+    myList.addElement(new FloatElement(3.14f));
+
+    myList.printAllElements();
+
+    myList.saveToFile("data.txt");
+
+    DataList newList;
+    newList.loadFromFile("data.txt");
+    std::cout << "Loaded from file:" << std::endl;
+    newList.printAllElements();
+
+    newList.sort();
+    std::cout << "Sorted list:" << std::endl;
+    newList.printAllElements();
+
+    return 0;
+}
+
+
+Program 2: Abstract Factory Pattern
+•	Concept: Implement the Abstract Factory design pattern to create families of related objects.
+•	Description:
+•	Define abstract classes for different product types (e.g., Button, TextBox, Window).
+•	Define abstract factory classes (GUIFactory) with methods to create these products.
+•	Create concrete factory classes (e.g., WindowsGUIFactory, MacGUIFactory) that implement the GUIFactory interface and create concrete product objects (e.g., WindowsButton, MacTextBox).
+•	Assignment:
+•	Implement the Abstract Factory pattern for creating GUI elements.
+•	Add a configuration system that allows the user to specify which factory to use at runtime.
+•	Create a simple application that uses the factory to create a window with buttons and text boxes.
+
+
+
+V. Friend Functions and Classes (20 minutes)
+•	Friend Function Definition: A non-member function that can access private and protected members of a class.
+•	Friend Class Definition: A class whose members can access private and protected members of another class.
+•	Use Cases: Operations between two different classes.
+•	Properties: Friendships are not transitive.
+•	Example: Rectangle and Square classes with a friend function to convert a square to a rectangle.
+•	Exercise 3 (20 minutes):
+•	Create two classes, Distance and Time.
+•	Make a friend function add that takes objects of Distance and Time as arguments and returns a new object that represents the sum of the distance and time (you'll need to decide on appropriate units for the sum).
+•	Implement the add function to access the private members of both Distance and Time to perform the addition.
+
+
+Program 3: Matrix Operations with Friend Functions
+•	Concept: Use friend functions to perform operations on matrices, accessing private data members.
+•	Description:
+•	Create a Matrix class with private data members to store the matrix elements (e.g., a 2D array or a std::vector<std::vector<double>>).
+•	Implement friend functions for matrix addition, subtraction, multiplication, and transposition.
+•	Assignment:
+•	Implement the matrix operations using friend functions.
+•	Add error handling (e.g., check for matrix dimensions).
+•	Overload operators (+, -, *) to perform matrix operations.
+•	Implement a friend class MatrixCalculator that contains the matrix operation functions.
+
+#include <iostream>
+#include <vector>
+
+class Matrix {
+private:
+    std::vector<std::vector<double>> data;
+    int rows, cols;
+
+public:
+    Matrix(int rows, int cols) : rows(rows), cols(cols), data(rows, std::vector<double>(cols, 0.0)) {}
+
+    // Access element at row i, column j
+    double& at(int i, int j) { return data[i][j]; }
+    double at(int i, int j) const { return data[i][j]; } // Const version
+
+    int getRows() const { return rows; }
+    int getCols() const { return cols; }
+
+    void print() const {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    // Friend function for matrix addition
+    friend Matrix add(const Matrix& a, const Matrix& b);
+
+    // Friend function for scalar multiplication
+    friend Matrix multiply(const Matrix& a, double scalar);
+};
+
+// Matrix addition
+Matrix add(const Matrix& a, const Matrix& b) {
+    if (a.rows != b.rows || a.cols != b.cols) {
+        throw std::invalid_argument("Matrix dimensions must match for addition");
+    }
+
+    Matrix result(a.rows, a.cols);
+    for (int i = 0; i < a.rows; ++i) {
+        for (int j = 0; j < a.cols; ++j) {
+            result.at(i, j) = a.at(i, j) + b.at(i, j);
+        }
+    }
+    return result;
+}
+
+// Scalar multiplication
+Matrix multiply(const Matrix& a, double scalar) {
+    Matrix result(a.rows, a.cols);
+    for (int i = 0; i < a.rows; ++i) {
+        for (int j = 0; j < a.cols; ++j) {
+            result.at(i, j) = a.at(i, j) * scalar;
+        }
+    }
+    return result;
+}
+
+int main() {
+    Matrix m1(2, 2);
+    m1.at(0, 0) = 1;
+    m1.at(0, 1) = 2;
+    m1.at(1, 0) = 3;
+    m1.at(1, 1) = 4;
+
+    Matrix m2(2, 2);
+    m2.at(0, 0) = 5;
+    m2.at(0, 1) = 6;
+    m2.at(1, 0) = 7;
+    m2.at(1, 1) = 8;
+
+    std::cout << "Matrix m1:" << std::endl;
+    m1.print();
+
+    std::cout << "Matrix m2:" << std::endl;
+    m2.print();
+
+    Matrix sum = add(m1, m2);
+    std::cout << "Sum of m1 and m2:" << std::endl;
+    sum.print();
+
+    Matrix scaled = multiply(m1, 2.0);
+    std::cout << "m1 scaled by 2:" << std::endl;
+    scaled.print();
+
+    return 0;
+}
+
+Polymorphism Practice Programs
+Program 4: Animal Sounds
+•	Concept: Polymorphism with virtual functions to produce different animal sounds.
+•	Description:
+•	Create a base class Animal with a virtual function makeSound().
+•	Create derived classes Dog, Cat, Cow, etc., that override the makeSound() function to print the appropriate sound for each animal.
+•	Create an array (or vector) of Animal pointers, pointing to instances of different animal types.
+•	Iterate through the array and call makeSound() on each element.
+•	Enhancement: Add a pure virtual function move() to the Animal class, forcing derived classes to implement their own movement behavior.
+
+#include <iostream>
+#include <vector>
+
+class Animal {
+public:
+    virtual void makeSound() {
+        std::cout << "Generic animal sound" << std::endl;
+    }
+    virtual void move() = 0; // Pure virtual function
+
+    virtual ~Animal() {} // Important virtual destructor
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Woof!" << std::endl;
+    }
+    void move() override {
+        std::cout << "Dog is running." << std::endl;
+    }
+};
+
+class Cat : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Meow!" << std::endl;
+    }
+    void move() override {
+        std::cout << "Cat is walking stealthily." << std::endl;
+    }
+};
+
+class Cow : public Animal {
+public:
+    void makeSound() override {
+        std::cout << "Moo!" << std::endl;
+    }
+    void move() override {
+        std::cout << "Cow is grazing." << std::endl;
+    }
+};
+
+int main() {
+    std::vector<Animal*> animals;
+    animals.push_back(new Dog());
+    animals.push_back(new Cat());
+    animals.push_back(new Cow());
+
+    for (Animal* animal : animals) {
+        animal->makeSound();
+        animal->move();
+        delete animal; // Clean up memory
+    }
+
+    return 0;
+}
+
+Program 5: Shape Hierarchy
+•	Concept: Polymorphism to calculate areas of different shapes.
+•	Description:
+•	Create an abstract base class Shape with a pure virtual function area().
+•	Create derived classes Rectangle, Circle, Triangle, etc., that inherit from Shape and implement the area() function to calculate the area of the respective shape.
+•	Create a function that takes a Shape pointer as input and prints the area of the shape.
+•	Enhancement: Add a virtual function printDetails() that prints the shape's dimensions (e.g., radius for a circle, width and height for a rectangle).
+
+#include <iostream>
+#include <cmath> // For M_PI
+
+class Shape {
+public:
+    virtual double area() = 0; // Pure virtual function
+    virtual void printDetails() { std::cout << "Generic Shape" << std::endl; } // Virtual function
+    virtual ~Shape() {}
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+public:
+    Rectangle(double width, double height) : width(width), height(height) {}
+    double area() override { return width * height; }
+    void printDetails() override {
+        std::cout << "Rectangle: width=" << width << ", height=" << height << std::endl;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double radius) : radius(radius) {}
+    double area() override { return M_PI * radius * radius; }
+    void printDetails() override {
+        std::cout << "Circle: radius=" << radius << std::endl;
+    }
+};
+
+class Triangle : public Shape {
+private:
+    double base, height;
+public:
+    Triangle(double base, double height) : base(base), height(height) {}
+    double area() override { return 0.5 * base * height; }
+    void printDetails() override {
+        std::cout << "Triangle: base=" << base << ", height=" << height << std::endl;
+    }
+};
+
+void printShapeArea(Shape* shape) {
+    std::cout << "Area: " << shape->area() << std::endl;
+    shape->printDetails();
+}
+
+int main() {
+    Rectangle rect(5, 10);
+    Circle circ(3);
+    Triangle tri(4, 6);
+
+    printShapeArea(&rect);
+    printShapeArea(&circ);
+    printShapeArea(&tri);
+
+    return 0;
+}
+
+
+Friend Class and Friend Function Practice Programs
+
+Program 6: Distance and Point
+•	Concept: Friend function to calculate the distance between a point and the origin.
+•	Description:
+•	Create a Point class with private members x and y representing coordinates.
+•	Create a friend function distanceFromOrigin() that takes a Point object as input and calculates the distance from the origin (0, 0).
+
+#include <iostream>
+#include <cmath>
+
+class Point {
+private:
+    double x, y;
+public:
+    Point(double x, double y) : x(x), y(y) {}
+
+    friend double distanceFromOrigin(const Point& p); // Friend function declaration
+};
+
+// Friend function definition
+double distanceFromOrigin(const Point& p) {
+    return std::sqrt(p.x * p.x + p.y * p.y);
+}
+
+int main() {
+    Point p(3, 4);
+    std::cout << "Distance from origin: " << distanceFromOrigin(p) << std::endl;
+    return 0;
+}
+
+Program 7: Bank Account and Transaction
+•	Concept: Friend class to allow a transaction class to modify a bank account's private balance.
+•	Description:
+•	Create a BankAccount class with a private member balance.
+•	Create a Transaction class that is a friend of BankAccount.
+•	The Transaction class should have methods to deposit and withdraw funds from a BankAccount object.
+
+#include <iostream>
+
+class BankAccount {
+private:
+    double balance;
+public:
+    BankAccount(double initialBalance) : balance(initialBalance) {}
+
+    double getBalance() const { return balance; }
+
+    friend class Transaction; // Friend class declaration
+};
+
+class Transaction {
+public:
+    void deposit(BankAccount& account, double amount) {
+        account.balance += amount;
+        std::cout << "Deposited " << amount << ". New balance: " << account.balance << std::endl;
+    }
+
+    void withdraw(BankAccount& account, double amount) {
+        if (amount <= account.balance) {
+            account.balance -= amount;
+            std::cout << "Withdrew " << amount << ". New balance: " << account.balance << std::endl;
+        } else {
+            std::cout << "Insufficient funds." << std::endl;
+        }
+    }
+};
+
+int main() {
+    BankAccount account(1000);
+    Transaction transaction;
+
+    std::cout << "Initial balance: " << account.getBalance() << std::endl;
+
+    transaction.deposit(account, 500);
+    transaction.withdraw(account, 200);
+    transaction.withdraw(account, 1500); // Attempt to withdraw more than the balance
+
+    return 0;
+}
+
+Program 8: Two Classes Interacting
+•	Concept: Demonstrates how two classes can interact and share private data through friend relationships.
+•	Description:
+•	Create a ClassA with a private data member value.
+•	Create a ClassB with a method that needs to access and modify ClassA's value.
+•	Make ClassB a friend of ClassA.
+
+#include <iostream>
+
+class ClassA {
+private:
+    int value;
+
+public:
+    ClassA(int val) : value(val) {}
+
+    int getValue() const { return value; }
+
+    friend class ClassB; // ClassB is a friend of ClassA
+};
+
+class ClassB {
+public:
+    void modifyValue(ClassA& obj, int newValue) {
+        // ClassB can access ClassA's private member 'value'
+        obj.value = newValue;
+    }
+
+    void printValue(const ClassA& obj) {
+        std::cout << "ClassA's value: " << obj.value << std::endl;
+    }
+};
+
+int main() {
+    ClassA objA(10);
+    ClassB objB;
+
+    std::cout << "Original value of objA: " << objA.getValue() << std::endl;
+
+    objB.modifyValue(objA, 50);
+    std::cout << "Value of objA after modification by objB: " << objA.getValue() << std::endl;
+
+    objB.printValue(objA);
+
+    return 0;
+}
+
+
+III. Advanced Polymorphism and Virtual Functions
+Observer Pattern with Abstract Classes
+•	Concept: Implement the Observer design pattern using abstract classes and virtual functions.
+•	Description:
+•	Create an abstract Subject class with methods to attach, detach, and notify observers.
+•	Create an abstract Observer class with a virtual update() method.
+•	Create concrete Subject classes that inherit from Subject and maintain a state.
+•	Create concrete Observer classes that inherit from Observer and react to changes in the subject's state.
+•	Assignment:
+•	Implement the Observer pattern.
+•	Create a simple application with a subject (e.g., a data source) and multiple observers (e.g., display elements) that update when the subject's data changes.
+•	Use std::vector or std::list to store the observers.
+
+IV. General Advanced C++ Assignments
+
+1.	Smart Pointers: Implement a custom smart pointer class (e.g., unique_ptr, shared_ptr) to manage dynamically allocated memory.
+2.	Custom Container: Create a custom container class (e.g., a linked list, a binary tree) with iterators and memory management.
+3.	Multithreading: Write a multithreaded program that performs a complex task, such as image processing or parallel sorting. Use std::thread and synchronization primitives (e.g., std::mutex, std::condition_variable).
+4.	Networking: Create a simple client-server application using sockets.
+5.	Design Patterns: Implement other design patterns like Singleton, Decorator, or Command.
+
+V. Conclusion (5 minutes)
+•	Review: Key concepts covered.
+•	Next Steps: Preview of the next lecture.
+•	Github:  programs 50-55.
+•	Q&A
+
+
