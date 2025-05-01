@@ -105,8 +105,7 @@ Examples: Use real-world examples to illustrate each concept. For instance, when
 Diagrams: Include diagrams (UML class diagrams, state diagrams, DFDs) to visually represent the concepts.
 C++ Code Snippets: While a full program is not here!, include small code snippets to demonstrate how to implement basic OOP concepts in C++. For example:
 
-cpp
-Copy Code
+
 // Example of a simple class
 class Dog {
 public:
