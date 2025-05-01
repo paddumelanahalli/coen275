@@ -250,3 +250,60 @@ How this Addresses the Problem Statement:
 
 
 This OOA use case demonstrates how to analyze the requirements of the online library system. By identifying objects, defining their attributes and methods, modeling their behavior over time, and mapping out the data flow for key functionalities, we can create a solid foundation for designing and implementing the system. The UML diagram, state diagram, and DFD provide visual representations that aid in understanding and communication. This analysis helps ensure that the system meets the needs of both patrons and librarians.
+
+
+Assignment 1: Expanding the Online Library System - Advanced Search and Recommendation Engine (Focus: Object Modeling, Abstraction, Encapsulation)
+
+
+Problem: Extend the Online Library System to include advanced search capabilities (e.g., search by keyword, publication date range, availability) and a book recommendation engine.
+Tasks:
+Object Modeling: Refine the existing Book class and introduce new classes as needed (e.g., SearchQuery, Recommendation). Define attributes and methods for these classes, paying attention to encapsulation and data hiding.
+Advanced Search: Implement the advanced search functionality, allowing users to specify multiple search criteria. Consider using design patterns like Strategy to handle different search algorithms.
+Recommendation Engine: Design and implement a simple recommendation engine that suggests books based on a user's borrowing history or genre preferences.
+UML Diagram: Create a UML class diagram illustrating the updated class structure and relationships.
+Deliverables: C++ code implementing the extended system, UML class diagram, and a brief report explaining the design choices.
+
+Assignment 2: Modeling a University Course Registration System (Focus: Dynamic Modeling, State Diagrams, Event Handling)
+
+
+Problem: Design a system for managing course registration at a university.
+Tasks:
+Identify Key Objects: Course, Student, Professor, Registration, Waitlist.
+Dynamic Modeling: Focus on the Course object and its lifecycle. Define the different states a course can be in (e.g., Planned, Open, Closed, Full, Cancelled).
+State Diagram: Create a state diagram illustrating the transitions between these states, triggered by events such as enrollStudent(), dropStudent(), cancelCourse(), openRegistration(), closeRegistration().
+Event Handling: Implement event handling mechanisms to manage the state transitions and associated actions (e.g., updating enrollment counts, notifying students on the waitlist).
+Deliverables: State diagram, C++ code implementing the course state transitions, and a report explaining the dynamic behavior of the system.
+
+Assignment 3: Designing a Restaurant Ordering System (Focus: Functional Modeling, Data Flow Diagrams, Use Cases)
+
+
+Problem: Design a system for managing orders in a restaurant.
+Tasks:
+Identify Actors: Customer, Waiter, Chef, Cashier, System.
+Define Use Cases: Place Order, Modify Order, Prepare Order, Serve Order, Generate Bill, Process Payment.
+Functional Modeling: Focus on the "Place Order" use case. Create a detailed Data Flow Diagram (DFD) illustrating the flow of data from the Customer to the Chef and back.
+Data Stores: Identify the necessary data stores (e.g., Menu Database, Order Database, Inventory Database).
+Deliverables: Use case descriptions, DFD for the "Place Order" use case, a list of data stores, and a brief report explaining the system's functionality.
+
+Assignment 4: Implementing Inheritance and Polymorphism - Shape Hierarchy (Focus: Inheritance, Polymorphism, Abstract Classes)
+
+
+Problem: Create a class hierarchy for different geometric shapes, demonstrating inheritance and polymorphism.
+Tasks:
+Abstract Base Class: Define an abstract base class Shape with abstract methods like calculateArea() and calculatePerimeter().
+Derived Classes: Create derived classes for specific shapes like Circle, Rectangle, Triangle, inheriting from the Shape class.
+Implement Methods: Implement the calculateArea() and calculatePerimeter() methods for each derived class, using the appropriate formulas.
+Polymorphism: Demonstrate polymorphism by creating an array of Shape pointers, storing instances of different shape classes, and calling the calculateArea() and calculatePerimeter() methods on each element.
+Deliverables: C++ code implementing the shape hierarchy, a UML class diagram illustrating the inheritance relationships, and a report explaining the use of inheritance and polymorphism.
+
+Assignment 5: Building a Simple Simulation - Traffic Light System (Focus: Object-Oriented Design, Concurrency, Event-Driven Programming)
+
+
+Problem: Simulate a traffic light system at an intersection.
+Tasks:
+Identify Objects: TrafficLight, Car, Intersection, Timer.
+Object-Oriented Design: Design the classes and their interactions. The TrafficLight class should manage the light sequence (Red, Yellow, Green). The Car class should simulate vehicles approaching the intersection. The Intersection class should manage the traffic flow.
+Concurrency (Optional): Use threads or asynchronous programming to simulate the concurrent operation of multiple traffic lights and cars.
+Event-Driven Programming: Use events (e.g., timer events, car arrival events) to trigger state changes in the traffic lights and car movements.
+Deliverables: C++ code implementing the traffic light simulation, a UML class diagram illustrating the system design, and a report explaining the simulation logic and concurrency aspects (if implemented).
+
