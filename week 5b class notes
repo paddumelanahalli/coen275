@@ -130,3 +130,123 @@ Activities: Incorporate short activities or thought experiments to engage studen
 "Draw a simple state diagram for a traffic light."
 
 This expanded outline provides a solid foundation for creating comprehensive class notes on object-oriented analysis, design, and programming. Remember to tailor the content and examples to your specific audience and learning objectives.
+
+
+Use Case: Online Library System
+
+
+Problem Statement:
+
+
+A library wants to develop an online system that allows patrons to search for books, reserve books, borrow books, return books, and manage their accounts. The system should also allow librarians to add new books, update book information, and manage patron accounts.
+
+
+Applying OOA Techniques:
+
+
+1. Object Modeling:
+
+
+Identify Objects:
+Book
+Patron
+Librarian
+Account
+Reservation
+Loan
+Identify Classes:
+Create classes corresponding to the objects above: Book, Patron, Librarian, Account, Reservation, Loan.
+Define Attributes:
+Book: bookID, title, author, ISBN, publicationDate, genre, availability (boolean)
+Patron: patronID, name, address, phone, email, accountID
+Librarian: librarianID, name, employeeID, username, password
+Account: accountID, balance, creationDate, patronID
+Reservation: reservationID, bookID, patronID, reservationDate, expiryDate
+Loan: loanID, bookID, patronID, loanDate, dueDate, returnDate
+Define Operations (Methods):
+Book: getBookDetails(), updateAvailability()
+Patron: searchBooks(), reserveBook(), borrowBook(), returnBook(), manageAccount()
+Librarian: addBook(), updateBookInfo(), managePatronAccount(), checkOutBook(), checkInBook()
+Account: getBalance(), addFunds(), payFine()
+Reservation: createReservation(), cancelReservation()
+Loan: createLoan(), updateLoanStatus()
+Relationships:
+A Patron has an Account.
+A Patron can make multiple Reservations.
+A Patron can have multiple Loans.
+A Book can be part of multiple Reservations and Loans.
+A Librarian manages Books and Patron accounts.
+
+UML Class Diagram (Simplified):
+
+
+(Imagine a UML class diagram here, showing the classes, attributes, methods, and relationships. You can use tools like draw.io or Lucidchart to create one.)
+
+
+2. Dynamic Modeling:
+
+
+Focus on a Key Object: Book
+
+States:
+
+Available: The book is on the shelf and can be borrowed.
+Reserved: The book is reserved by a patron.
+Loaned: The book is currently checked out by a patron.
+Lost: The book is lost.
+Events:
+
+search(): A patron searches for the book.
+reserve(): A patron reserves the book.
+borrow(): A patron borrows the book.
+return(): A patron returns the book.
+lost(): The book is reported lost.
+add(): A librarian adds the book to the system.
+remove(): A librarian removes the book from the system.
+State Diagram:
+
+Initial State: Available
+search(): Stays in Available (or displays book details).
+reserve(): Transitions to Reserved.
+borrow(): Transitions to Loaned.
+return(): Transitions back to Available.
+lost(): Transitions to Lost.
+add(): Transitions to Available (if added by librarian).
+remove(): (Book is removed from the system - terminal state or archived).
+
+3. Functional Modeling:
+
+
+Focus on the "Borrow Book" Functionality
+
+Data Flow Diagram (DFD):
+
+Patron: Initiates "Borrow Book" request.
+System: Verifies Patron Account (valid, not blocked, etc.).
+System: Checks Book Availability (not reserved by someone else, etc.).
+System: Creates a Loan record in the database.
+System: Updates Book availability to Loaned.
+System: Updates Patron account with the new loan.
+System: Generates a loan receipt for the Patron.
+Patron: Receives the book and loan receipt.
+Actors: Patron, Librarian, System
+
+Data Stores: Book Database, Patron Database, Loan Database, Account Database
+
+
+Explanation of the DFD Steps:
+
+
+The Patron initiates the process by requesting to borrow a book.
+The System verifies the Patron's account status (e.g., valid account, no outstanding fines).
+The System checks the Book's availability (e.g., not already loaned, not reserved by another patron).
+If the Patron and Book are both valid, the System creates a new Loan record in the Loan Database.
+The System updates the Book's availability status in the Book Database to Loaned.
+The System updates the Patron's account in the Account Database to reflect the new loan.
+The System generates a loan receipt for the Patron, containing details such as the book title, due date, and loan ID.
+The Patron receives the book and the loan receipt.
+
+How this Addresses the Problem Statement:
+
+
+This OOA use case demonstrates how to analyze the requirements of the online library system. By identifying objects, defining their attributes and methods, modeling their behavior over time, and mapping out the data flow for key functionalities, we can create a solid foundation for designing and implementing the system. The UML diagram, state diagram, and DFD provide visual representations that aid in understanding and communication. This analysis helps ensure that the system meets the needs of both patrons and librarians.
