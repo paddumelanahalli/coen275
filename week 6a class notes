@@ -66,37 +66,198 @@ o	Composition over Inheritance: "Favoring combining objects over inheriting from
 
 (5) Design Patterns: Let's Get Coding! (40 minutes)
 •	"Alright, enough theory. Let's see some code. We're going to look at a few key design patterns and implement them in C++."
+
+Factory Method Pattern
+✔️ Concept:
+Define an interface for creating an object, but let subclasses decide which class to instantiate.
+✅ C++ Program:
+
+#include <iostream>
+#include <memory>
+
+class Button {
+public:
+    virtual void render() = 0;
+};
+
+class WindowsButton : public Button {
+public:
+    void render() override {
+        std::cout << "Render Windows Button\n";
+    }
+};
+
+class MacOSButton : public Button {
+public:
+    void render() override {
+        std::cout << "Render MacOS Button\n";
+    }
+};
+
+class Dialog {
+public:
+    virtual std::unique_ptr<Button> createButton() = 0;
+    void renderButton() {
+        auto btn = createButton();
+        btn->render();
+    }
+};
+
+class WindowsDialog : public Dialog {
+public:
+    std::unique_ptr<Button> createButton() override {
+        return std::make_unique<WindowsButton>();
+    }
+};
+
+class MacOSDialog : public Dialog {
+public:
+    std::unique_ptr<Button> createButton() override {
+        return std::make_unique<MacOSButton>();
+    }
+};
+
+int main() {
+    std::unique_ptr<Dialog> dialog = std::make_unique<MacOSDialog>();
+    dialog->renderButton();
+    return 0;
+}
+________________________________________
+
+Structural Patterns
+•	Decorator Pattern
+✔️ Concept:
+Attach additional responsibilities to an object dynamically.
+✅ C++ Program:
+
+#include <iostream>
+#include <memory>
+
+class Coffee {
+public:
+    virtual std::string getDescription() = 0;
+    virtual double cost() = 0;
+};
+
+class SimpleCoffee : public Coffee {
+public:
+    std::string getDescription() override {
+        return "Simple Coffee";
+    }
+    double cost() override {
+        return 2.0;
+    }
+};
+
+class CoffeeDecorator : public Coffee {
+protected:
+    std::unique_ptr<Coffee> coffee;
+public:
+    CoffeeDecorator(std::unique_ptr<Coffee> c) : coffee(std::move(c)) {}
+};
+
+class Milk : public CoffeeDecorator {
+public:
+    Milk(std::unique_ptr<Coffee> c) : CoffeeDecorator(std::move(c)) {}
+    std::string getDescription() override {
+        return coffee->getDescription() + ", Milk";
+    }
+    double cost() override {
+        return coffee->cost() + 0.5;
+    }
+};
+
+int main() {
+    std::unique_ptr<Coffee> coffee = std::make_unique<Milk>(std::make_unique<SimpleCoffee>());
+    std::cout << coffee->getDescription() << " $" << coffee->cost() << "\n";
+    return 0;
+}
+________________________________________
+
+Behavioral Patterns
+•	Observer Pattern
+✔️ Concept:
+Define a one-to-many dependency between objects so when one object changes state, all dependents are notified.
+✅ C++ Program:
+
+#include <iostream>
+#include <vector>
+#include <memory>
+
+class Observer {
+public:
+    virtual void update(int value) = 0;
+};
+
+class Subject {
+    std::vector<Observer*> observers;
+    int state = 0;
+public:
+    void attach(Observer* obs) {
+        observers.push_back(obs);
+    }
+    void setState(int val) {
+        state = val;
+        notifyAll();
+    }
+    void notifyAll() {
+        for (auto* obs : observers)
+            obs->update(state);
+    }
+};
+
+class ConcreteObserver : public Observer {
+    std::string name;
+public:
+    ConcreteObserver(const std::string& n) : name(n) {}
+    void update(int value) override {
+        std::cout << name << " received update: " << value << "\n";
+    }
+};
+
+int main() {
+    Subject subj;
+    ConcreteObserver obs1("Observer1"), obs2("Observer2");
+
+    subj.attach(&obs1);
+    subj.attach(&obs2);
+
+    subj.setState(42);
+    return 0;
+}
+
+
 •	Singleton Pattern:
 o	"The goal here is to make sure that only one instance of a class can ever exist. Think of a print spooler – you only want one of those running."
 o	C++ Code Example (Singleton.cpp):
-o	#include <iostream>
-o	
-o	class Singleton {
-o	public:
-o	    static Singleton* getInstance() {
-o	        if (!instance) {
-o	            instance = new Singleton();
-o	        }
-o	        return instance;
-o	    }
-o	
-o	private:
-o	    Singleton() {
-o	        std::cout << "Singleton created." << std::endl;
-o	    }
-o	    static Singleton* instance;
-o	};
-o	
-o	Singleton* Singleton::instance = nullptr;
-o	
-o	int main() {
-o	    Singleton* s1 = Singleton::getInstance();
-o	    Singleton* s2 = Singleton::getInstance();
-o	    if (s1 == s2) {
-o	        std::cout << "Both instances are the same." << std::endl;
-o	    }
-o	    return 0;
-o	}
+#include <iostream>
+
+class Singleton {
+public:
+    static Singleton* getInstance() {
+        if (!instance) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+private:
+    Singleton() {
+        std::cout << "Singleton created." << std::endl;
+    }
+    static Singleton* instance;
+};
+
+Singleton* Singleton::instance = nullptr;
+
+int main() {
+    Singleton* s1 = Singleton::getInstance();
+    Singleton* s2 = Singleton::getInstance();
+    if (s1 == s2) {
+        std::cout << "Both instances are the same." << std::endl;
+    }
+    return 0;
+}
 
 Pay attention to the getInstance() method and the private constructor. That's where the magic happens."
 o	Ask: "Where else could you use a Singleton?"
@@ -104,69 +265,69 @@ o	Ask: "Where else could you use a Singleton?"
 •	Observer Pattern:
 o	"This pattern is all about notifying other objects when something changes. Think of a stock portfolio – you want to update all the charts and displays when the stock price changes."
 o	C++ Code Example (Observer.cpp):
-o	#include <iostream>
-o	#include <vector>
-o	
-o	class Observer {
-o	public:
-o	    virtual void update(float price) = 0;
-o	};
-o	
-o	class Subject {
-o	public:
-o	    void attach(Observer* observer) {
-o	        observers.push_back(observer);
-o	    }
-o	
-o	    void detach(Observer* observer) {
-o	        for (int i = 0; i < observers.size(); ++i) {
-o	            if (observers[i] == observer) {
-o	                observers.erase(observers.begin() + i);
-o	                return;
-o	            }
-o	        }
-o	    }
-o	
-o	    void setPrice(float newPrice) {
-o	        price = newPrice;
-o	        notify();
-o	    }
-o	
-o	private:
-o	    void notify() {
-o	        for (Observer* observer : observers) {
-o	            observer->update(price);
-o	        }
-o	    }
-o	
-o	    std::vector<Observer*> observers;
-o	    float price;
-o	};
-o	
-o	class StockDisplay : public Observer {
-o	public:
-o	    StockDisplay(Subject* subject) : subject(subject) {
-o	        subject->attach(this);
-o	    }
-o	
-o	    void update(float price) override {
-o	        std::cout << "Stock price updated: " << price << std::endl;
-o	    }
-o	
-o	private:
-o	    Subject* subject;
-o	};
-o	
-o	int main() {
-o	    Subject stock;
-o	    StockDisplay display1(&stock);
-o	    StockDisplay display2(&stock);
-o	
-o	    stock.setPrice(150.0);
-o	    stock.setPrice(155.5);
-o	
-o	    return 0;
-o	}
+#include <iostream>
+#include <vector>
+
+class Observer {
+public:
+    virtual void update(float price) = 0;
+};
+
+class Subject {
+public:
+    void attach(Observer* observer) {
+        observers.push_back(observer);
+    }
+
+    void detach(Observer* observer) {
+        for (int i = 0; i < observers.size(); ++i) {
+            if (observers[i] == observer) {
+                observers.erase(observers.begin() + i);
+                return;
+            }
+        }
+    }
+
+    void setPrice(float newPrice) {
+        price = newPrice;
+        notify();
+    }
+
+private:
+    void notify() {
+        for (Observer* observer : observers) {
+            observer->update(price);
+        }
+    }
+
+    std::vector<Observer*> observers;
+    float price;
+};
+
+class StockDisplay : public Observer {
+public:
+    StockDisplay(Subject* subject) : subject(subject) {
+        subject->attach(this);
+    }
+
+    void update(float price) override {
+        std::cout << "Stock price updated: " << price << std::endl;
+    }
+
+private:
+    Subject* subject;
+};
+
+int main() {
+    Subject stock;
+    StockDisplay display1(&stock);
+    StockDisplay display2(&stock);
+
+    stock.setPrice(150.0);
+    stock.setPrice(155.5);
+
+    return 0;
+}
 
 Notice the attach() and notify() methods in the Subject class, and the update() method in the Observer class."
 o	Ask: "What are some other real-world examples of the Observer pattern?"
@@ -174,69 +335,69 @@ o	Ask: "What are some other real-world examples of the Observer pattern?"
 •	Strategy Pattern:
 o	"This pattern lets you switch algorithms at runtime. Think of sorting – you might want to use different sorting algorithms depending on the size of the data."
 o	C++ Code Example (Strategy.cpp):
-o	#include <iostream>
-o	
-o	class SortStrategy {
-o	public:
-o	    virtual void sort(int arr[], int size) = 0;
-o	};
-o	
-o	class BubbleSort : public SortStrategy {
-o	public:
-o	    void sort(int arr[], int size) override {
-o	        std::cout << "Sorting using Bubble Sort" << std::endl;
-o	        for (int i = 0; i < size - 1; i++) {
-o	            for (int j = 0; j < size - i - 1; j++) {
-o	                if (arr[j] > arr[j + 1]) {
-o	                    int temp = arr[j];
-o	                    arr[j] = arr[j + 1];
-o	                    arr[j + 1] = temp;
-o	                }
-o	            }
-o	        }
-o	    }
-o	};
-o	
-o	class QuickSort : public SortStrategy {
-o	public:
-o	    void sort(int arr[], int size) override {
-o	        std::cout << "Sorting using Quick Sort" << std::endl;
-o	        // Quick sort implementation (omitted for brevity)
-o	        // ...
-o	    }
-o	};
-o	
-o	class Sorter {
-o	public:
-o	    Sorter(SortStrategy* strategy) : strategy(strategy) {}
-o	
-o	    void setStrategy(SortStrategy* strategy) {
-o	        this->strategy = strategy;
-o	    }
-o	
-o	    void sortArray(int arr[], int size) {
-o	        strategy->sort(arr, size);
-o	    }
-o	
-o	private:
-o	    SortStrategy* strategy;
-o	};
-o	
-o	int main() {
-o	    int arr[] = {5, 2, 8, 1, 9};
-o	    int size = sizeof(arr) / sizeof(arr[0]);
-o	
-o	    BubbleSort bubbleSort;
-o	    QuickSort quickSort;
-o	
-o	    Sorter sorter(&bubbleSort);
-o	    sorter.sortArray(arr, size);
-o	
-o	    sorter.setStrategy(&quickSort);
-o	    sorter.sortArray(arr, size);
-o	
-o	    return 0;
-o	}
+#include <iostream>
+
+class SortStrategy {
+public:
+    virtual void sort(int arr[], int size) = 0;
+};
+
+class BubbleSort : public SortStrategy {
+public:
+    void sort(int arr[], int size) override {
+        std::cout << "Sorting using Bubble Sort" << std::endl;
+        for (int i = 0; i < size - 1; i++) {
+            for (int j = 0; j < size - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+};
+
+class QuickSort : public SortStrategy {
+public:
+    void sort(int arr[], int size) override {
+        std::cout << "Sorting using Quick Sort" << std::endl;
+        // Quick sort implementation (omitted for brevity)
+        // ...
+    }
+};
+
+class Sorter {
+public:
+    Sorter(SortStrategy* strategy) : strategy(strategy) {}
+
+    void setStrategy(SortStrategy* strategy) {
+        this->strategy = strategy;
+    }
+
+    void sortArray(int arr[], int size) {
+        strategy->sort(arr, size);
+    }
+
+private:
+    SortStrategy* strategy;
+};
+
+int main() {
+    int arr[] = {5, 2, 8, 1, 9};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    BubbleSort bubbleSort;
+    QuickSort quickSort;
+
+    Sorter sorter(&bubbleSort);
+    sorter.sortArray(arr, size);
+
+    sorter.setStrategy(&quickSort);
+    sorter.sortArray(arr, size);
+
+    return 0;
+}
 "Notice how we can swap out the sorting algorithm at runtime by changing the strategy in the Sorter class."
 o	Ask: "Can you think of other situations where you might want to use the Strategy pattern?"
 
@@ -263,5 +424,4 @@ o	"We dove into design patterns and saw how they can make your code more flexibl
 •	"I highly encourage you to continue exploring design patterns on your own. Read the 'Gang of Four' book, check out Refactoring Guru, and experiment with different patterns in your own projects."
 •	"Do you have any questions? Now's your chance to ask."
 •	"Thanks for your participation, everyone. You've been a great class. Now go out there and write some amazing code!"
-
 
